@@ -1,441 +1,528 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Librería Matita - Catálogo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    :root { 
-        --verde-oscuro: #0a3d31; 
-        --verde-medio: #1a4d3e; 
-        --dorado: #c5a35d; 
-        --crema: #f9f7f2; 
-        --blanco: #ffffff; 
-        --rojo: #e74c3c;
-        --verde-whatsapp: #25d366; 
-        --naranja: #e67e22;
-        --azul-pago: #3498db;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librería Matita - Catálogo Completo</title>
     
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--crema); color: #333; overflow-x: hidden; padding-bottom: 100px; }
-
-    header { 
-        background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 100%); 
-        color: var(--blanco); padding: 40px 20px; text-align: center; 
-    }
-    header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 8vw, 3rem); margin: 0; }
-
-    nav { 
-        background: white; padding: 15px; text-align: center; position: sticky; 
-        top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-        display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;
-    }
-    nav a { text-decoration: none; color: var(--verde-oscuro); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
-
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-  
-    .promo-pack {
-        background: var(--naranja); color: white; text-align: center;
-        padding: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-    }
-
-    .category-container {
-        display: flex; justify-content: center; gap: 10px; overflow-x: auto;
-        padding: 10px 0 20px; scrollbar-width: none;
-    }
-    .cat-card { 
-        min-width: 90px; padding: 12px; background: white; border-radius: 12px; 
-        text-align: center; cursor: pointer; transition: 0.3s; border: 2px solid transparent;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.05); flex-shrink: 0;
-    }
-    .cat-card.active { border-color: var(--verde-oscuro); background: var(--verde-oscuro); color: white; }
-    .cat-card i { font-size: 1.2rem; color: var(--dorado); margin-bottom: 5px; display: block; }
-
-    .filters-wrapper { 
-        background: white; padding: 20px; border-radius: 20px; 
-        margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-    }
-    .search-box { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 50px; outline: none; }
-
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-
-    .product-card { 
-        background: white; border-radius: 20px; overflow: hidden; 
-        position: relative; transition: 0.3s; border: 1px solid #eee;
-        display: flex; flex-direction: column;
-    }
-    .img-container { height: 250px; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; }
-    .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    .fav-btn {
-        position: absolute; top: 15px; right: 15px; background: white;
-        border: none; border-radius: 50%; width: 35px; height: 35px;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: #ccc;
-    }
-    .fav-btn.active { color: var(--rojo); }
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    .info { padding: 20px; text-align: center; flex-grow: 1; }
-    .price-container { margin: 10px 0; min-height: 50px; }
-    .price { font-size: 1.6rem; font-weight: 700; color: var(--verde-oscuro); margin: 0; }
-    .old-price { font-size: 0.9rem; color: #888; text-decoration: line-through; display: block; }
-    .price-promo { color: var(--rojo); }
+    <style>
+        :root { 
+            --verde-oscuro: #0a3d31; 
+            --verde-medio: #1a4d3e; 
+            --dorado: #c5a35d; 
+            --crema: #f9f7f2; 
+            --blanco: #ffffff; 
+            --rojo: #e74c3c;
+            --verde-whatsapp: #25d366; 
+            --naranja: #e67e22;
+            --azul-pago: #3498db;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+        
+        body { 
+            margin: 0; 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--crema); 
+            color: #333; 
+            overflow-x: hidden; 
+            padding-bottom: 120px; 
+        }
 
-    .badge-promo { position: absolute; top: 10px; left: 10px; background: var(--dorado); color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: 700; }
+        /* BANNER PROMOCIONAL */
+        .promo-pack {
+            background: var(--naranja); 
+            color: white; 
+            text-align: center;
+            padding: 10px; 
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1001;
+        }
 
-    .btn-add { width: 100%; background: var(--verde-oscuro); color: white; border: none; padding: 15px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-    .btn-add:hover { background: var(--dorado); }
+        /* HEADER & NAV */
+        header { 
+            background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 100%); 
+            color: var(--blanco); 
+            padding: 60px 20px; 
+            text-align: center;
+            border-bottom: 5px solid var(--dorado);
+        }
+        header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 8vw, 4rem); margin: 0; }
 
-    /* CARRITO */
-    .cart-summary { 
-        position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(105%); 
-        background: white; padding: 25px; border-radius: 30px 30px 0 0; 
-        box-shadow: 0 -15px 50px rgba(0,0,0,0.15); z-index: 2000; width: 100%; 
-        max-width: 500px; transition: 0.5s; max-height: 90vh; overflow-y: auto;
-    }
-    .cart-summary.active { transform: translateX(-50%) translateY(0); }
-    .cart-list { max-height: 150px; overflow-y: auto; margin-bottom: 15px; padding: 0; list-style: none; }
-    .cart-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+        nav { 
+            background: white; 
+            padding: 15px; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1); 
+            display: flex; 
+            justify-content: center; 
+            gap: 25px; 
+            flex-wrap: wrap;
+        }
+        nav a { 
+            text-decoration: none; 
+            color: var(--verde-oscuro); 
+            font-weight: 700; 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+        nav a:hover { color: var(--dorado); }
 
-    .payment-methods { margin: 15px 0; padding: 10px; border: 1px solid #eee; border-radius: 15px; }
-    .payment-methods h4 { margin: 0 0 10px 0; font-size: 0.8rem; color: #777; text-transform: uppercase; }
-    .methods-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .method-opt { 
-        padding: 10px; border: 1.5px solid #eee; border-radius: 10px; 
-        font-size: 0.75rem; cursor: pointer; text-align: center; font-weight: 600; transition: 0.2s;
-    }
-    .method-opt.selected { border-color: var(--azul-pago); background: #ebf5fb; color: var(--azul-pago); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
 
-    .coupon-box { display: flex; gap: 8px; margin-bottom: 15px; }
-    .coupon-box input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-family: 'Montserrat'; }
-    .btn-coupon { background: var(--verde-oscuro); color: white; border: none; padding: 0 15px; border-radius: 10px; cursor: pointer; font-weight: 700; }
+        /* CATEGORÍAS */
+        .category-container {
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            overflow-x: auto;
+            padding: 10px 5px 30px; 
+            scrollbar-width: none;
+        }
+        .category-container::-webkit-scrollbar { display: none; }
+        
+        .cat-card { 
+            min-width: 110px; 
+            padding: 20px 15px; 
+            background: white; 
+            border-radius: 20px; 
+            text-align: center; 
+            cursor: pointer; 
+            border: 2px solid transparent;
+            box-shadow: var(--shadow); 
+            flex-shrink: 0;
+        }
+        .cat-card.active { 
+            border-color: var(--verde-oscuro); 
+            background: var(--verde-oscuro); 
+            color: white; 
+            transform: translateY(-5px);
+        }
+        .cat-card i { font-size: 1.5rem; color: var(--dorado); margin-bottom: 8px; display: block; }
+        .cat-card span { font-weight: 600; font-size: 0.9rem; }
 
-    .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 30px; right: 30px; background: #25d366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; z-index: 1000; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-  </style>
+        /* FILTROS Y BUSCADOR */
+        .filters-wrapper { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 25px; 
+            margin-bottom: 40px; 
+            box-shadow: var(--shadow); 
+        }
+        .search-box { 
+            width: 100%; 
+            padding: 18px 25px; 
+            border: 1px solid #eee; 
+            border-radius: 50px; 
+            outline: none; 
+            font-family: 'Montserrat';
+            font-size: 1rem;
+            background: #fdfdfd;
+        }
+
+        /* GRID DE PRODUCTOS */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 30px; 
+        }
+
+        .product-card { 
+            background: white; 
+            border-radius: 25px; 
+            overflow: hidden; 
+            position: relative; 
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex; 
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+
+        .img-container { 
+            height: 300px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 30px; 
+            position: relative; 
+            background: #fafafa;
+        }
+        .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .fav-btn {
+            position: absolute; top: 20px; right: 20px; 
+            background: white; border: none; border-radius: 50%; 
+            width: 45px; height: 45px; display: flex; 
+            align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            color: #ddd; z-index: 10;
+        }
+        .fav-btn.active { color: var(--rojo); }
+
+        .badge-promo { 
+            position: absolute; top: 20px; left: 20px; 
+            background: var(--dorado); color: white; 
+            padding: 6px 15px; border-radius: 50px; 
+            font-size: 0.75rem; font-weight: 700; 
+        }
+
+        .info { padding: 25px; text-align: center; flex-grow: 1; }
+        .info h3 { margin: 15px 0; font-size: 1.2rem; min-height: 54px; font-weight: 600; color: var(--verde-oscuro); }
+        
+        .price-container { margin: 15px 0; min-height: 60px; }
+        .price { font-size: 1.8rem; font-weight: 700; color: var(--verde-oscuro); margin: 0; }
+        .old-price { font-size: 1rem; color: #999; text-decoration: line-through; display: block; }
+
+        .btn-add { 
+            width: 100%; 
+            background: var(--verde-oscuro); 
+            color: white; 
+            border: none; 
+            padding: 18px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-add:hover { background: var(--dorado); }
+
+        /* CARRITO / RESUMEN */
+        .cart-summary { 
+            position: fixed; bottom: 0; left: 50%; 
+            transform: translateX(-50%) translateY(105%); 
+            background: white; padding: 35px; 
+            border-radius: 40px 40px 0 0; 
+            box-shadow: 0 -15px 50px rgba(0,0,0,0.2); 
+            z-index: 2000; width: 100%; 
+            max-width: 600px; max-height: 90vh; 
+            overflow-y: auto;
+        }
+        .cart-summary.active { transform: translateX(-50%) translateY(0); }
+
+        .cart-list { margin: 20px 0; padding: 0; list-style: none; }
+        .cart-item { 
+            display: flex; justify-content: space-between; 
+            padding: 12px 0; border-bottom: 1px solid #eee; 
+            font-size: 0.95rem; 
+        }
+
+        .payment-methods { margin: 25px 0; }
+        .methods-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+        .method-opt { 
+            padding: 15px; border: 2.5px solid #eee; border-radius: 15px; 
+            font-size: 0.85rem; cursor: pointer; text-align: center; 
+            font-weight: 700; color: #666;
+        }
+        .method-opt.selected { 
+            border-color: var(--azul-pago); 
+            background: #f0f8ff; 
+            color: var(--azul-pago); 
+        }
+
+        .coupon-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .coupon-box input { 
+            flex: 1; padding: 15px; border: 1px solid #ddd; 
+            border-radius: 15px; font-family: 'Montserrat'; 
+        }
+        .btn-coupon { 
+            background: var(--verde-oscuro); color: white; 
+            border: none; padding: 0 25px; border-radius: 15px; 
+            cursor: pointer; font-weight: 700; 
+        }
+
+        .totals-card { background: #f9f9f9; padding: 25px; border-radius: 20px; margin-bottom: 25px; }
+        .total-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 1rem; }
+        .total-main { font-size: 1.8rem; font-weight: 700; color: var(--verde-oscuro); border-top: 2px solid #ddd; padding-top: 15px; margin-top: 10px; }
+
+        .whatsapp-float { 
+            position: fixed; width: 65px; height: 65px; 
+            bottom: 30px; right: 30px; background: #25d366; 
+            color: white; border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; 
+            font-size: 35px; z-index: 1000; text-decoration: none; 
+            box-shadow: 0 10px 25px rgba(37,211,102,0.3); 
+        }
+
+        @media (max-width: 600px) {
+            header { padding: 40px 15px; }
+            .grid { grid-template-columns: 1fr; }
+            .cart-summary { padding: 25px 15px; border-radius: 25px 25px 0 0; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="promo-pack" id="promoBanner">🎁 ¡Promociones activas!</div>
+<div class="promo-pack" id="promoBanner">Cargando beneficios...</div>
 
-<header><h1>Librería Matita</h1></header>
+<header>
+    <h1>Librería Matita</h1>
+</header>
 
 <nav>
-  <a href="Inicio.html">Inicio</a>
-  <a href="Favorito.html">Favoritos ❤️</a>
-  <a href="Contacto.html">Contacto</a>
+    <a href="Inicio.html">Inicio</a>
+    <a href="Favorito.html">Mis Favoritos ❤️</a>
+    <a href="Contacto.html">Contacto</a>
 </nav>
 
 <div class="container">
-  
-  <div class="admin-upload-zone">
-    <p style="margin-top:0; font-weight:700; color:var(--verde-oscuro)">Subir Nuevo Libro</p>
-    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(event)">
-    <button onclick="document.getElementById('fileInput').click()" style="background:var(--dorado); color:white; border:none; padding:10px 20px; border-radius:50px; cursor:pointer; font-weight:700;">
-        <i class="fas fa-image"></i> Seleccionar de Galería
-    </button>
-    <div id="uploadStatus" style="margin-top:10px; font-size:0.8rem; font-weight:500;"></div>
-  </div>
+    <div class="category-container" id="catBar">
+        <div class="cat-card active" onclick="filterCat('all', this)"><i class="fas fa-th-large"></i><span>Todos</span></div>
+        <div class="cat-card" onclick="filterCat('lengua', this)"><i class="fas fa-book"></i><span>Lengua</span></div>
+        <div class="cat-card" onclick="filterCat('matematica', this)"><i class="fas fa-calculator"></i><span>Mate</span></div>
+        <div class="cat-card" onclick="filterCat('ciencias', this)"><i class="fas fa-microscope"></i><span>Ciencias</span></div>
+        <div class="cat-card" onclick="filterCat('otros', this)"><i class="fas fa-plus-circle"></i><span>Otros</span></div>
+    </div>
 
-  <div class="category-container">
-    <div class="cat-card active" onclick="filterCat('all', this)"><i class="fas fa-th"></i><span>Todos</span></div>
-    <div class="cat-card" onclick="filterCat('lengua', this)"><i class="fas fa-spell-check"></i><span>Lengua</span></div>
-    <div class="cat-card" onclick="filterCat('matematica', this)"><i class="fas fa-calculator"></i><span>Mate</span></div>
-    <div class="cat-card" onclick="filterCat('ciencias', this)"><i class="fas fa-flask"></i><span>Ciencias</span></div>
-    <div class="cat-card" onclick="filterCat('otros', this)"><i class="fas fa-plus"></i><span>Otros</span></div>
-  </div>
+    <div class="filters-wrapper">
+        <input type="text" id="search" class="search-box" placeholder="¿Qué libro o material buscás hoy?" oninput="render()">
+    </div>
 
-  <div class="filters-wrapper">
-    <input type="text" id="search" class="search-box" placeholder="Buscar por nombre del libro..." oninput="render()">
-  </div>
-
-  <div class="grid" id="productGrid"></div>
+    <div class="grid" id="productGrid">
+        </div>
 </div>
 
 <div id="cartBar" class="cart-summary">
-  <h3 style="margin-top:0; font-size:1rem; color:var(--verde-oscuro)">Tu Pedido</h3>
-  <ul id="cartList" class="cart-list"></ul>
-  
-  <div class="coupon-box">
-    <input type="text" id="couponInput" placeholder="Código de cupón">
-    <button class="btn-coupon" onclick="applyCoupon()">Aplicar</button>
-  </div>
-
-  <div class="payment-methods">
-      <h4><i class="fas fa-credit-card"></i> Método de Pago:</h4>
-      <div class="methods-grid">
-          <div class="method-opt" onclick="selectPayment('Efectivo', this)">Efectivo</div>
-          <div class="method-opt" onclick="selectPayment('Transferencia', this)">Transferencia</div>
-          <div class="method-opt" onclick="selectPayment('Mercado Pago', this)">Mercado Pago</div>
-          <div class="method-opt" onclick="selectPayment('Tarjeta', this)">Tarjeta Créd/Déb</div>
-      </div>
-  </div>
-
-  <div style="background:#f9f9f9; padding:15px; border-radius:15px; margin-bottom:15px;">
-    <div style="display:flex; justify-content: space-between; font-size: 0.9rem; margin-bottom:5px;">
-        <span>Subtotal:</span> <span id="cartSubtotal">$0</span>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0; font-family:'Playfair Display'; font-size:1.8rem;">Tu Carrito</h3>
+        <i class="fas fa-times" onclick="toggleCart(false)" style="cursor:pointer; font-size:1.5rem;"></i>
     </div>
-    <div id="discountRow" style="display:none; justify-content: space-between; color: var(--rojo); font-weight: 700; font-size: 0.9rem;">
-        <span id="discountLabel">Descuento:</span> <span id="cartDiscount">-$0</span>
+    
+    <ul id="cartList" class="cart-list"></ul>
+    
+    <div class="coupon-box">
+        <input type="text" id="couponInput" placeholder="Código de cupón">
+        <button class="btn-coupon" onclick="applyCoupon()">Validar</button>
     </div>
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top:1px solid #ddd; pt:10px;">
-        <span style="font-weight: 700;">TOTAL:</span>
-        <span id="cartTotal" style="font-size:1.4rem; font-weight:700; color:var(--verde-oscuro)">$0</span>
-    </div>
-  </div>
 
-  <div style="display:flex; gap:10px;">
-    <button onclick="vaciarCarrito()" style="flex:1; padding:15px; border:none; border-radius:12px; cursor:pointer; font-weight:600; background:#eee;">Vaciar</button>
-    <button onclick="sendOrder()" style="flex:2; background:var(--verde-whatsapp); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer; font-size:1rem;">
-        <i class="fab fa-whatsapp"></i> Finalizar Pedido
-    </button>
-  </div>
+    <div class="payment-methods">
+        <strong style="font-size:0.9rem; text-transform:uppercase; color:#888;">Elegí cómo pagar:</strong>
+        <div class="methods-grid">
+            <div class="method-opt" onclick="selectPayment('Efectivo', this)">Efectivo (-10%)</div>
+            <div class="method-opt" onclick="selectPayment('Transferencia', this)">Transferencia</div>
+            <div class="method-opt" onclick="selectPayment('Mercado Pago', this)">Mercado Pago</div>
+            <div class="method-opt" onclick="selectPayment('Tarjeta', this)">Tarjeta</div>
+        </div>
+    </div>
+
+    <div class="totals-card">
+        <div class="total-row"><span>Subtotal:</span> <span id="cartSubtotal">$0</span></div>
+        <div id="discountRow" style="display:none; color: var(--rojo); font-weight:700;" class="total-row">
+            <span id="discountLabel">Bonificación:</span> <span id="cartDiscount">-$0</span>
+        </div>
+        <div class="total-row total-main">
+            <span>TOTAL:</span>
+            <span id="cartTotal">$0</span>
+        </div>
+    </div>
+
+    <div style="display:flex; gap:15px;">
+        <button onclick="vaciarCarrito()" style="flex:1; padding:20px; border:none; border-radius:15px; cursor:pointer; font-weight:700; background:#eee;">Limpiar</button>
+        <button onclick="sendOrder()" style="flex:2; background:var(--verde-whatsapp); color:white; border:none; border-radius:15px; font-weight:700; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <i class="fab fa-whatsapp"></i> Finalizar Pedido
+        </button>
+    </div>
 </div>
 
 <a href="https://wa.me/3516062227" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
 <script>
-  // CONFIGURACIÓN SUPABASE
-  const SUPABASE_URL = "https://xlwkzoapfbpoxaccvoea.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
-  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // --- CONFIGURACIÓN DE DATOS ---
+    const SUPABASE_URL = "https://xlwkzoapfbpoxaccvoea.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // CONFIGURACIÓN CLOUDINARY
-  const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dllm8ggob/image/upload";
-  const UPLOAD_PRESET = "Matita_web";
+    let products = [];
+    let favorites = JSON.parse(localStorage.getItem('favoritos_matita')) || [];
+    let cart = [];
+    let currentCat = 'all';
+    let appliedCoupon = null;
+    let paymentMethod = "";
 
-  let products = [];
-  let favorites = JSON.parse(localStorage.getItem('favoritos_matita')) || [];
-  let cart = [];
-  let currentCat = 'all';
-  let appliedCoupon = null;
-  let paymentMethod = "";
+    const configMatita = { 
+        montoMinimoRegalo: 50000, 
+        valorRegalo: 5000,
+        descEfectivo: 0.10 // 10% de descuento en efectivo
+    };
 
-  const configMatita = { montoMinimo: 50000, regaloPesos: 5000 };
-
-  async function loadProducts() {
-    const { data, error } = await _supabase
-      .from('productos')
-      .select('*');
-    
-    if (error) {
-      console.error("Error cargando productos:", error);
-    } else {
-      products = data;
-      render();
+    // --- CARGA DE PRODUCTOS ---
+    async function loadProducts() {
+        const { data, error } = await _supabase.from('productos').select('*');
+        if (error) {
+            console.error("Error:", error);
+        } else {
+            products = data;
+            render();
+        }
     }
-  }
 
-  // --- LÓGICA DE SUBIDA SILENCIOSA ---
-  async function handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+    // --- RENDERIZADO ---
+    function render() {
+        const grid = document.getElementById('productGrid');
+        const searchVal = document.getElementById('search').value.toLowerCase();
+        grid.innerHTML = '';
+        
+        const filtered = products.filter(p => {
+            const matchesSearch = p.nombre.toLowerCase().includes(searchVal);
+            const matchesCat = (currentCat === 'all' || p.categoria === currentCat);
+            return matchesSearch && matchesCat;
+        });
 
-      const status = document.getElementById('uploadStatus');
-      status.style.color = "var(--verde-oscuro)";
-      status.innerText = "⏳ Subiendo foto optimizada...";
+        filtered.forEach(p => {
+            const isFav = favorites.includes(p.nombre) ? 'active' : '';
+            const imgUrl = p.imagen.includes('cloudinary') ? p.imagen.replace('/upload/', '/upload/f_auto,q_auto/') : p.imagen;
+            
+            grid.innerHTML += `
+                <div class="product-card">
+                    <div class="img-container">
+                        ${p.etiqueta && p.etiqueta !== 'ninguna' ? `<div class="badge-promo">${p.etiqueta}</div>` : ''}
+                        <button class="fav-btn ${isFav}" onclick="toggleFav('${p.nombre}')"><i class="fas fa-heart"></i></button>
+                        <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/300'">
+                    </div>
+                    <div class="info">
+                        <small style="color:var(--dorado); font-weight:700; text-transform:uppercase">${p.categoria}</small>
+                        <h3>${p.nombre}</h3>
+                        <div class="price-container">
+                            ${p.precioAnterior ? `<span class="old-price">$${Number(p.precioAnterior).toLocaleString('es-AR')}</span>` : ''}
+                            <p class="price">$${Number(p.precio).toLocaleString('es-AR')}</p>
+                        </div>
+                        <button class="btn-add" onclick="addToCart('${p.nombre}', ${p.precio})">Sumar al Carrito</button>
+                    </div>
+                </div>`;
+        });
+    }
 
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', UPLOAD_PRESET);
-      // Aplicar f_auto y q_auto mediante parámetros de subida
-      formData.append('transformation', 'f_auto,q_auto');
+    // --- LÓGICA DEL CARRITO ---
+    function addToCart(name, price) {
+        cart.push({name, price});
+        updateCartUI();
+        toggleCart(true);
+    }
 
-      try {
-          const resp = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
-          const data = await resp.json();
+    function toggleCart(show) {
+        document.getElementById('cartBar').classList.toggle('active', show);
+    }
 
-          if (data.secure_url) {
-              status.innerText = "✅ Subida con éxito. Guardando en Supabase...";
-              // Guardamos en Supabase
-              await saveProductToSupabase(data.secure_url);
-          }
-      } catch (err) {
-          status.innerText = "❌ Error al subir imagen.";
-          console.error(err);
-      }
-  }
+    function selectPayment(method, el) {
+        paymentMethod = method;
+        document.querySelectorAll('.method-opt').forEach(opt => opt.classList.remove('selected'));
+        el.classList.add('selected');
+        updateCartUI();
+    }
 
-  async function saveProductToSupabase(url) {
-      const { error } = await _supabase
-          .from('productos')
-          .insert([{ 
-              nombre: "Nuevo Libro " + Math.floor(Math.random()*100), 
-              precio: 1000, 
-              imagen: url, 
-              categoria: "otros",
-              stock: "si"
-          }]);
+    function updateCartUI() {
+        const list = document.getElementById('cartList');
+        list.innerHTML = cart.map((item, index) => `
+            <li class="cart-item">
+                <span>${item.name}</span>
+                <strong>$${item.price.toLocaleString('es-AR')} <i class="fas fa-trash-alt" onclick="removeItem(${index})" style="color:var(--rojo); margin-left:10px; cursor:pointer"></i></strong>
+            </li>
+        `).join('');
 
-      if (error) {
-          alert("Error Supabase: " + error.message);
-      } else {
-          document.getElementById('uploadStatus').innerText = "✅ ¡Producto creado con éxito!";
-          loadProducts(); // Refrescar lista
-      }
-  }
-  // ---------------------------------
+        let subtotal = cart.reduce((acc, item) => acc + item.price, 0);
+        let descuentoEfectivo = (paymentMethod.includes('Efectivo')) ? subtotal * configMatita.descEfectivo : 0;
+        let regaloExtra = (subtotal >= configMatita.montoMinimoRegalo) ? configMatita.valorRegalo : 0;
+        let cupónDesc = appliedCoupon ? subtotal * (appliedCoupon.descuento / 100) : 0;
+        
+        let totalDescuentos = descuentoEfectivo + regaloExtra + cupónDesc;
+        let totalFinal = subtotal - totalDescuentos;
 
-  function renderPromoBanner() {
-      const banner = document.getElementById('promoBanner');
-      banner.innerText = `🎁 ¡Si superás los $${Number(configMatita.montoMinimo).toLocaleString('es-AR')} te regalamos $${Number(configMatita.regaloPesos).toLocaleString('es-AR')}!`;
-  }
+        document.getElementById('cartSubtotal').innerText = `$${subtotal.toLocaleString('es-AR')}`;
+        
+        if(totalDescuentos > 0) {
+            document.getElementById('discountRow').style.display = 'flex';
+            document.getElementById('cartDiscount').innerText = `-$${totalDescuentos.toLocaleString('es-AR')}`;
+        } else {
+            document.getElementById('discountRow').style.display = 'none';
+        }
 
-  function render() {
-    const grid = document.getElementById('productGrid');
-    const search = document.getElementById('search').value.toLowerCase();
-    grid.innerHTML = '';
-    
-    products.filter(p => {
-      const matchesSearch = p.nombre.toLowerCase().includes(search);
-      const matchesCat = (currentCat === 'all' || p.categoria === currentCat);
-      return matchesSearch && matchesCat;
-    }).forEach(p => {
-      const isFav = favorites.includes(p.nombre) ? 'active' : '';
-      const isAgotado = p.stock === 'no';
-      
-      // OPTIMIZACIÓN DE IMAGEN CLOUDINARY AL RENDERIZAR
-      const optimizedImg = p.imagen.replace('/upload/', '/upload/f_auto,q_auto/');
+        document.getElementById('cartTotal').innerText = `$${(totalFinal < 0 ? 0 : totalFinal).toLocaleString('es-AR')}`;
+    }
 
-      let htmlPrecio = `<p class="price">$${Number(p.precio).toLocaleString('es-AR')}</p>`;
-      if (p.precioAnterior) {
-          htmlPrecio = `<span class="old-price">$${Number(p.precioAnterior).toLocaleString('es-AR')}</span>` + `<p class="price price-promo">$${Number(p.precio).toLocaleString('es-AR')}</p>`;
-      }
+    async function applyCoupon() {
+        const input = document.getElementById('couponInput').value.trim().toUpperCase();
+        const { data, error } = await _supabase.from('cupones').select('*').eq('codigo', input).single();
+        if(data && !error) {
+            appliedCoupon = data;
+            alert("¡Cupón aplicado con éxito!");
+            updateCartUI();
+        } else {
+            alert("El cupón no existe o expiró.");
+        }
+    }
 
-      grid.innerHTML += `
-        <div class="product-card" style="${isAgotado ? 'opacity:0.7' : ''}">
-          <div class="img-container">
-            ${p.etiqueta && p.etiqueta !== 'ninguna' ? `<div class="badge-promo">${p.etiqueta}</div>` : ''}
-            <button class="fav-btn ${isFav}" onclick="toggleFav('${p.nombre}')"><i class="fas fa-heart"></i></button>
-            <img src="${optimizedImg}" onerror="this.src='https://via.placeholder.com/300'">
-          </div>
-          <div class="info">
-            <small style="color:var(--dorado); font-weight:700">${p.categoria.toUpperCase()}</small>
-            <h3 style="margin:10px 0; font-size:1.1rem; min-height:45px">${p.nombre}</h3>
-            <div class="price-container">${htmlPrecio}</div>
-            <button class="btn-add" ${isAgotado ? 'disabled style="background:#ccc"' : ''} onclick="addToCart('${p.nombre}', ${p.precio})">
-              ${isAgotado ? 'SIN STOCK' : 'AGREGAR AL CARRITO'}
-            </button>
-          </div>
-        </div>`;
-    });
-  }
+    function removeItem(idx) {
+        cart.splice(idx, 1);
+        if(cart.length === 0) toggleCart(false);
+        updateCartUI();
+    }
 
-  function selectPayment(method, element) {
-      paymentMethod = method;
-      document.querySelectorAll('.method-opt').forEach(opt => opt.classList.remove('selected'));
-      element.classList.add('selected');
-  }
-
-  function toggleFav(name) {
-    favorites = favorites.includes(name) ? favorites.filter(f => f !== name) : [...favorites, name];
-    localStorage.setItem('favoritos_matita', JSON.stringify(favorites));
-    render();
-  }
-
-  function addToCart(name, price) {
-    cart.push({name, price});
-    updateCartUI();
-  }
-
-  async function applyCoupon() {
-    const codeInput = document.getElementById('couponInput').value.trim().toUpperCase();
-    
-    const { data: found, error } = await _supabase
-      .from('cupones')
-      .select('*')
-      .eq('codigo', codeInput)
-      .single();
-    
-    if(found && !error) {
-        appliedCoupon = found;
-        alert(`¡Cupón ${found.codigo} aplicado!`);
-    } else {
+    function vaciarCarrito() {
+        cart = [];
+        paymentMethod = "";
         appliedCoupon = null;
-        alert("Cupón no válido.");
-    }
-    updateCartUI();
-  }
-
-  function updateCartUI() {
-    const bar = document.getElementById('cartBar');
-    bar.classList.toggle('active', cart.length > 0);
-    
-    const cartList = document.getElementById('cartList');
-    cartList.innerHTML = cart.map((item, index) => `
-        <li class="cart-item">
-            <span>${item.name}</span>
-            <div>
-                <strong>$${Number(item.price).toLocaleString('es-AR')}</strong>
-                <i class="fas fa-times" onclick="removeItem(${index})" style="margin-left:10px; color:var(--rojo); cursor:pointer"></i>
-            </div>
-        </li>
-    `).join('');
-
-    let subtotal = cart.reduce((acc, item) => acc + Number(item.price), 0);
-    let regalo = (subtotal >= Number(configMatita.montoMinimo)) ? Number(configMatita.regaloPesos) : 0;
-    let descuentoCupon = appliedCoupon ? subtotal * (Number(appliedCoupon.descuento) / 100) : 0;
-    let totalFinal = subtotal - (regalo + descuentoCupon);
-    
-    document.getElementById('cartSubtotal').innerText = `$${subtotal.toLocaleString('es-AR')}`;
-    
-    if(regalo + descuentoCupon > 0) {
-        document.getElementById('discountRow').style.display = 'flex';
-        document.getElementById('cartDiscount').innerText = `-$${(regalo + descuentoCupon).toLocaleString('es-AR')}`;
-    } else {
-        document.getElementById('discountRow').style.display = 'none';
+        document.querySelectorAll('.method-opt').forEach(opt => opt.classList.remove('selected'));
+        toggleCart(false);
+        updateCartUI();
     }
 
-    document.getElementById('cartTotal').innerText = `$${(totalFinal < 0 ? 0 : totalFinal).toLocaleString('es-AR')}`;
-  }
+    // --- ENVÍO DE PEDIDO ---
+    async function sendOrder() {
+        if(cart.length === 0) return alert("El carrito está vacío.");
+        if(!paymentMethod) return alert("Por favor, seleccioná un método de pago.");
 
-  function removeItem(index) {
-      cart.splice(index, 1);
-      updateCartUI();
-  }
+        let subtotal = cart.reduce((acc, item) => acc + item.price, 0);
+        let totalFinal = document.getElementById('cartTotal').innerText;
 
-  async function sendOrder() {
-    if(!paymentMethod) return alert("Por favor, seleccioná un método de pago.");
+        let mensaje = `*NUEVO PEDIDO - LIBRERÍA MATITA*%0A%0A`;
+        mensaje += cart.map(i => `• ${i.name}`).join('%0A');
+        mensaje += `%0A%0A*Pago:* ${paymentMethod}`;
+        mensaje += `%0A*Total:* ${totalFinal}`;
+        mensaje += `%0A%0A_Enviado desde la web_`;
 
-    let subtotal = cart.reduce((acc, item) => acc + Number(item.price), 0);
-    let regalo = (subtotal >= Number(configMatita.montoMinimo)) ? Number(configMatita.regaloPesos) : 0;
-    let descuentoCupon = appliedCoupon ? (subtotal * (Number(appliedCoupon.descuento) / 100)) : 0;
-    let totalFinal = subtotal - (regalo + descuentoCupon);
+        // Guardar pedido en base de datos (opcional)
+        await _supabase.from('pedidos').insert([{
+            detalle: cart.map(i => i.name).join(", "),
+            total: subtotal,
+            pago: paymentMethod
+        }]);
 
-    let text = "*NUEVO PEDIDO - LIBRERÍA MATITA*%0A%0A";
-    text += cart.map(i => "- " + i.name).join("%0A");
-    text += `%0A%0A*Subtotal:* $${subtotal.toLocaleString('es-AR')}`;
-    if(regalo > 0) text += `%0A🎁 *Regalo:* -$${regalo.toLocaleString('es-AR')}`;
-    if(appliedCoupon) text += `%0A🎫 *Cupón:* -$${descuentoCupon.toLocaleString('es-AR')}`;
-    text += `%0A💰 *Método de Pago:* ${paymentMethod}`;
-    text += `%0A%0A*TOTAL FINAL: $${(totalFinal < 0 ? 0 : totalFinal).toLocaleString('es-AR')}*`;
-    
-    await _supabase.from('pedidos').insert([{
-        detalle: cart.map(i => i.name).join(", "),
-        pago: paymentMethod,
-        total: totalFinal
-    }]);
+        window.open(`https://wa.me/3516062227?text=${mensaje}`, '_blank');
+    }
 
-    window.open(`https://wa.me/3516062227?text=${text}`, '_blank');
-  }
+    // --- OTROS ---
+    function filterCat(cat, el) {
+        currentCat = cat;
+        document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        render();
+    }
 
-  function filterCat(cat, btn) {
-    currentCat = cat;
-    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    render();
-  }
+    function toggleFav(name) {
+        favorites = favorites.includes(name) ? favorites.filter(f => f !== name) : [...favorites, name];
+        localStorage.setItem('favoritos_matita', JSON.stringify(favorites));
+        render();
+    }
 
-  function vaciarCarrito() { cart = []; appliedCoupon = null; paymentMethod = ""; document.querySelectorAll('.method-opt').forEach(opt => opt.classList.remove('selected')); updateCartUI(); }
-
-  window.onload = () => { renderPromoBanner(); loadProducts(); };
+    window.onload = () => {
+        document.getElementById('promoBanner').innerText = `🎁 ¡Regalo de $${configMatita.valorRegalo.toLocaleString()} en compras mayores a $${configMatita.montoMinimoRegalo.toLocaleString()}!`;
+        loadProducts();
+    };
 </script>
 </body>
 </html>
