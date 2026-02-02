@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto - Librería Matita</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root { 
+      --verde-oscuro: #0a3d31; 
+      --verde-medio: #1a4d3e; 
+      --dorado: #c5a35d; 
+      --crema: #f9f7f2; 
+      --blanco: #ffffff; 
+    }
+    
+    body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--crema); }
+
+    header { background: var(--verde-oscuro); color: white; padding: 40px 20px; text-align: center; }
+    header h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin: 0; }
+
+    nav { background: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    nav a { text-decoration: none; color: var(--verde-oscuro); font-weight: 700; margin: 0 15px; font-size: 0.8rem; text-transform: uppercase; }
+
+    .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
+
+    .grid-contacto { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 0; 
+      border-radius: 30px; 
+      overflow: hidden; 
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+    }
+
+    .info-verde { 
+      background: var(--verde-oscuro); 
+      color: white; 
+      padding: 50px; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+    }
+    .info-verde h2 { font-family: 'Playfair Display', serif; color: var(--dorado); font-size: 2.5rem; margin-top: 0; margin-bottom: 20px; }
+    
+    .info-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+    .info-item i { color: var(--dorado); font-size: 1.2rem; }
+
+    .form-blanco { background: white; padding: 50px; }
+    .form-blanco h2 { font-family: 'Playfair Display', serif; color: var(--verde-oscuro); margin-top: 0; margin-bottom: 25px; }
+
+    input, textarea { 
+      width: 100%; padding: 15px; margin-bottom: 20px; border: 1px solid #eee; 
+      border-radius: 10px; background: #fdfdfd; font-family: inherit; box-sizing: border-box;
+    }
+
+    .btn-enviar { 
+      width: 100%; background: var(--verde-oscuro); color: white; border: none; 
+      padding: 18px; border-radius: 10px; font-weight: 700; cursor: pointer; 
+      transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .btn-enviar:hover { background: var(--dorado); }
+
+    .mapa-container { margin-top: 40px; border-radius: 30px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); line-height: 0; }
+
+    @media (max-width: 850px) { 
+      .grid-contacto { grid-template-columns: 1fr; } 
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Contacto</h1>
+</header>
+
+<nav>
+  <a href="Inicio.html">Inicio</a>
+  <a href="Catalogo.html">Catálogo</a>
+  <a href="Favorito.html">Favoritos</a>
+</nav>
+
+<div class="container">
+  <div class="grid-contacto">
+    
+    <div class="info-verde">
+      <h2>Hablemos</h2>
+      <p style="margin-bottom: 30px; opacity: 0.9;">Estamos para asesorarte. Escribinos y te responderemos a la brevedad.</p>
+      
+      <div class="info-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Av. Simón Bolívar 1206 LOCAL 2 y 3, X5151 La Calera, Córdoba</span>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-phone"></i>
+        <span>+54 351 606 2227</span>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-envelope"></i>
+        <span>libreriamatita@gmail.com</span>
+      </div>
+    </div>
+
+    <div class="form-blanco">
+      <h2>Envianos un mensaje</h2>
+      <form id="contactForm" action="https://formspree.io/f/TU_ID_AQUI" method="POST">
+        <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+        <input type="email" id="email" name="_replyto" placeholder="Tu Email (Gmail)" required>
+        <textarea id="message" name="message" rows="4" placeholder="¿Cómo podemos ayudarte?" required></textarea>
+        <input type="text" name="_gotcha" style="display:none">
+        
+        <button type="submit" class="btn-enviar">Enviar Mensaje</button>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="mapa-container">
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3406.438547466838!2d-64.3364448!3d-31.3468503!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9432a245532d5e39%3A0xc3191f618458764a!2sAv.%20Sim%C3%B3n%20Bol%C3%ADvar%201206%2C%20La%20Calera%2C%20C%C3%B3rdoba!5e0!3m2!1ses!2sar!4v1700000000000" 
+      width="100%" 
+      height="450" 
+      style="border:0;" 
+      allowfullscreen="" 
+      loading="lazy">
+    </iframe>
+  </div>
+</div>
+
+<footer style="text-align: center; padding: 40px; color: #999; font-size: 0.9rem;">
+  © 2026 Librería Matita - Av. Bolívar
+</footer>
+
+<script>
+  // CONFIGURACIÓN SUPABASE
+  const SUPABASE_URL = "https://xlwkzoapfbpoxaccvoea.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const contactForm = document.getElementById('contactForm');
+
+  contactForm.addEventListener('submit', async function(e) {
+    // Obtenemos los valores
+    const nombre = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const mensaje = document.getElementById('message').value;
+
+    // Guardamos una copia en Supabase por seguridad
+    const { error } = await _supabase
+      .from('contactos')
+      .insert([{ 
+        nombre: nombre, 
+        email: email, 
+        mensaje: mensaje 
+      }]);
+
+    if (error) {
+      console.error("Error guardando en base de datos:", error);
+    }
+    
+    // El formulario seguirá su curso hacia Formspree normalmente
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>
+    if (localStorage.getItem('sesion_activa') !== 'si') {
+      window.location.href = "login.html"; 
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Librería Matita - Inicio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root { 
+        --verde-oscuro: #0a3d31; 
+        --verde-medio: #1a4d3e; 
+        --dorado: #c5a35d; 
+        --crema: #f9f7f2; 
+        --blanco: #ffffff; 
+        --rojo: #e74c3c;
+    }
+    
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--crema); color: #333; }
+    
+    header { 
+        background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 100%); 
+        color: var(--blanco); 
+        padding: 60px 20px; 
+        text-align: center; 
+    }
+    header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 6vw, 3.5rem); margin: 0; }
+    .logo-header { width: 100px; height: auto; margin-bottom: 15px; }
+
+    nav { 
+        background: var(--blanco); 
+        padding: 10px 15px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        position: sticky; 
+        top: 0; 
+        z-index: 1000; 
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        flex-wrap: wrap;
+    }
+    .logo-mini { height: 35px; width: auto; margin-right: 15px; }
+    nav a { color: var(--verde-oscuro); margin: 5px 12px; text-decoration: none; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+
+    .hero-section { padding: 40px 20px; text-align: center; }
+    .hero-card { 
+        max-width: 850px; 
+        margin: 0 auto; 
+        padding: 50px 30px; 
+        background: var(--blanco); 
+        border-radius: 20px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+    }
+    .hero-card h2 { font-family: 'Playfair Display', serif; color: var(--verde-oscuro); font-size: 2rem; margin-top: 0; }
+    
+    .btn-main { 
+        display: inline-block; 
+        padding: 15px 40px; 
+        background-color: var(--verde-oscuro); 
+        color: var(--blanco); 
+        text-decoration: none; 
+        font-weight: 700; 
+        border-radius: 50px; 
+        transition: 0.3s; 
+    }
+    .btn-main:hover { background: var(--dorado); transform: scale(1.05); }
+
+    .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+    .title { font-family: 'Playfair Display', serif; color: var(--verde-oscuro); font-size: 2rem; text-align: center; margin-bottom: 30px; }
+
+    .grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+        gap: 25px; 
+    }
+
+    .card { 
+        background: white; padding: 25px; border-radius: 20px; border: 1px solid #eee; 
+        text-align: center; position: relative; transition: 0.3s;
+        display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+    .badge-novedad {
+        position: absolute; top: 15px; left: 15px; background: var(--rojo); color: white;
+        padding: 5px 12px; font-size: 0.7rem; font-weight: 700; border-radius: 50px; text-transform: uppercase; z-index: 5;
+    }
+
+    .img-box { height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+    .img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+    .go-link {
+        display: inline-flex; align-items: center; gap: 8px; color: var(--dorado);
+        text-decoration: none; font-weight: 700; font-size: 0.9rem; margin-top: 10px;
+    }
+
+    .rating { color: var(--dorado); margin-bottom: 10px; font-size: 1.2rem; }
+    .stars-input { display: flex; justify-content: center; gap: 5px; margin-bottom: 10px; cursor: pointer; }
+    .stars-input i { font-size: 1.5rem; color: #ddd; }
+    .stars-input i.active { color: var(--dorado); }
+
+    .review-card { 
+        background: white; padding: 25px; border-radius: 8px; border-left: 5px solid var(--dorado); 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: left; 
+    }
+
+    .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 30px; right: 30px; background: #25d366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; z-index: 1000; text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+    footer { background: var(--verde-oscuro); color: white; text-align: center; padding: 40px 20px; margin-top: 60px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="logo2.png" alt="Logo Matita" class="logo-header">
+  <h1>Librería Matita</h1>
+  <p>Tu rincón literario y tecnológico</p>
+</header>
+
+<nav>
+  <img src="logo2.png" alt="Matita" class="logo-mini">
+  <a href="index.html">Inicio</a>
+  <a href="catalogo.html">Catálogo</a> 
+  <a href="contacto.html">Contacto</a>
+   <a href="favorito.html">Favoritos ❤️</a>
+  <a href="#" onclick="cerrarSesion()" style="color:#d9534f; margin-left: 15px;"><i class="fas fa-sign-out-alt"></i></a>
+</nav>
+
+<section class="hero-section">
+    <div class="hero-card">
+      <h2 id="saludoUsuario">¡Bienvenidos!</h2>
+      <p>Explorá nuestro catálogo y hacé tu pedido directamente por WhatsApp.</p>
+      <br>
+      <a href="catalogo.html" class="btn-main">VER CATÁLOGO</a>
+    </div>
+</section>
+
+<div class="container" id="novedadesSection" style="display:none;">
+  <h2 class="title">✨ Recién llegados</h2>
+  <div class="grid" id="novedadesGrid"></div>
+</div>
+
+<div class="container">
+  <h2 class="title">Reseñas</h2>
+  
+  <div class="hero-card" style="max-width: 600px; margin-bottom: 40px;">
+    <h3 style="margin-top:0; color: var(--verde-oscuro)">Dejanos tu opinión</h3>
+    
+    <div class="stars-input" id="starRating">
+      <i class="fas fa-star" onclick="setRating(1)"></i>
+      <i class="fas fa-star" onclick="setRating(2)"></i>
+      <i class="fas fa-star" onclick="setRating(3)"></i>
+      <i class="fas fa-star" onclick="setRating(4)"></i>
+      <i class="fas fa-star" onclick="setRating(5)"></i>
+    </div>
+
+    <input type="text" id="revName" placeholder="Tu nombre" style="width:100%; padding:12px; margin:10px 0; border:1px solid #ddd; border-radius:8px;">
+    <textarea id="revText" placeholder="Tu comentario..." rows="3" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;"></textarea>
+    <button id="btnPublicar" onclick="saveReview()" style="background: var(--dorado); color: white; border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; border-radius: 8px;">PUBLICAR</button>
+  </div>
+
+  <div class="grid" id="reviewsGrid"></div>
+</div>
+
+<a href="https://wa.me/3516062227" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+<footer><p>© 2026 Librería Matita</p></footer>
+
+<script>
+  // CONFIGURACIÓN SUPABASE
+  const SUPABASE_URL = "https://xlwkzoapfbpoxaccvoea.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let currentRating = 5; 
+
+  window.onload = function() { 
+    const nombreGuardado = localStorage.getItem('nombre_usuario');
+    if (nombreGuardado) {
+        document.getElementById('saludoUsuario').innerText = `¡Hola, ${nombreGuardado}!`;
+        document.getElementById('revName').value = nombreGuardado;
+    }
+
+    renderNovedades(); 
+    renderReviews(); 
+    setRating(5); 
+  };
+
+  function setRating(val) {
+    currentRating = val;
+    const stars = document.querySelectorAll('#starRating i');
+    stars.forEach((s, i) => {
+      s.classList.toggle('active', i < val);
+    });
+  }
+
+  async function renderNovedades() {
+    const grid = document.getElementById('novedadesGrid');
+    const section = document.getElementById('novedadesSection');
+    
+    const { data: novedades, error } = await _supabase
+      .from('productos')
+      .select('*')
+      .eq('novedad', 'si');
+
+    if (error) {
+        console.error("Error cargando novedades:", error);
+        return;
+    }
+
+    if (novedades && novedades.length > 0) {
+      section.style.display = "block";
+      grid.innerHTML = novedades.map(p => {
+        let precioFinal = parseFloat(p.precio) || 0;
+        // OPTIMIZACIÓN DE IMAGEN CLOUDINARY
+        const optimizedImg = p.imagen.replace('/upload/', '/upload/f_auto,q_auto/');
+
+        return `
+          <div class="card">
+            <div class="badge-novedad">Novedad ✨</div>
+            <div class="img-box">
+              <img src="${optimizedImg}" onerror="this.src='https://via.placeholder.com/300'">
+            </div>
+            <h3 style="font-family:'Playfair Display'; margin: 10px 0; font-size: 1.1rem;">${p.nombre}</h3>
+            <p style="color:var(--verde-oscuro); font-weight:700; margin-bottom: 5px; font-size: 1.2rem;">
+               $${precioFinal.toLocaleString('es-AR')}
+            </p>
+            <a href="catalogo.html" class="go-link">Ver en catálogo <i class="fas fa-arrow-right"></i></a>
+          </div>
+        `;
+      }).join("");
+    } else {
+      section.style.display = "none";
+    }
+  }
+
+  async function saveReview() {
+    const name = document.getElementById('revName').value;
+    const text = document.getElementById('revText').value;
+    const btn = document.getElementById('btnPublicar');
+
+    if (!name || !text) return alert("Completá los campos");
+    
+    btn.disabled = true;
+    btn.innerText = "PUBLICANDO...";
+
+    const { error } = await _supabase
+      .from('reseñas')
+      .insert([{ 
+        autor: name, 
+        comentario: text, 
+        estrellas: currentRating 
+      }]);
+
+    if (error) {
+        alert("Error al publicar");
+        console.error(error);
+        btn.disabled = false;
+        btn.innerText = "PUBLICAR";
+    } else {
+        document.getElementById('revText').value = "";
+        renderReviews();
+        btn.disabled = false;
+        btn.innerText = "PUBLICAR";
+    }
+  }
+
+  async function renderReviews() {
+    const grid = document.getElementById('reviewsGrid');
+    
+    const { data: reviews, error } = await _supabase
+      .from('reseñas')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error("Error reviews:", error);
+        return;
+    }
+
+    grid.innerHTML = reviews.map(r => {
+      let starsHtml = '';
+      for(let i=0; i<5; i++) {
+        starsHtml += `<i class="${i < r.estrellas ? 'fas' : 'far'} fa-star"></i>`;
+      }
+      
+      return `
+        <div class="review-card">
+          <div class="rating">${starsHtml}</div>
+          <p>"${r.comentario}"</p>
+          <small><strong>— ${r.autor}</strong></small>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function cerrarSesion() { 
+    localStorage.removeItem('sesion_activa'); 
+    localStorage.removeItem('nombre_usuario'); 
+    window.location.href = "login.html"; 
+  }
+</script>
+</body>
+</html>

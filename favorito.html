@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Librería Matita - Mis Favoritos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root { 
+        --verde-oscuro: #0a3d31; 
+        --verde-medio: #1a4d3e; 
+        --dorado: #c5a35d; 
+        --crema: #f9f7f2; 
+        --blanco: #ffffff; 
+        --rojo: #e74c3c;
+    }
+    
+    body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--crema); color: #333; }
+
+    header { background: var(--verde-oscuro); color: white; padding: 30px; text-align: center; }
+    header h1 { font-family: 'Playfair Display', serif; margin: 0; }
+
+    nav { background: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    nav a { text-decoration: none; color: var(--verde-oscuro); font-weight: 700; margin: 0 10px; font-size: 0.8rem; text-transform: uppercase; }
+
+    .container { max-width: 1200px; margin: 40px auto; padding: 20px; min-height: 60vh; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+    .product-card { background: white; border-radius: 20px; overflow: hidden; position: relative; border: 1px solid #eee; display: flex; flex-direction: column; }
+    .img-container { height: 200px; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    
+    .info { padding: 20px; text-align: center; flex-grow: 1; }
+    .price { font-size: 1.3rem; font-weight: 700; color: var(--verde-oscuro); margin-bottom: 10px; display: block; }
+    
+    .btn-remove { width: 100%; background: #f8f8f8; color: #666; border: none; padding: 12px; cursor: pointer; font-weight: 700; transition: 0.3s; }
+    .btn-remove:hover { background: var(--rojo); color: white; }
+
+    .empty-msg { text-align: center; padding: 50px; font-size: 1.2rem; color: #999; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Mis Favoritos ❤️</h1>
+</header>
+
+<nav>
+  <a href="Inicio.html">Inicio</a>
+  <a href="Catalogo.html">Volver al Catálogo</a>
+</nav>
+
+<div class="container">
+  <div class="grid" id="favoritesGrid"></div>
+  <div id="emptyMessage" class="empty-msg" style="display:none;">
+    <i class="fas fa-heart-broken" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+    Aún no tenés productos guardados.
+  </div>
+</div>
+
+<script>
+  // 2. AGREGADO: CONFIGURACIÓN DE TU SUPABASE
+  const SUPABASE_URL = "https://xlwkzoapfbpoxaccvoea.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // 3. AGREGADO: FUNCIÓN PARA SINCRONIZAR PRODUCTOS DESDE LA NUBE
+  async function syncFromSupabase() {
+    const { data, error } = await _supabase.from('productos').select('*');
+    if (!error && data) {
+      localStorage.setItem('productos_matita', JSON.stringify(data));
+      renderFavorites(); // Llamamos al render original después de descargar
+    }
+  }
+
+  function renderFavorites() {
+    const grid = document.getElementById('favoritesGrid');
+    const msg = document.getElementById('emptyMessage');
+    
+    const allProducts = JSON.parse(localStorage.getItem('productos_matita')) || [];
+    const favNames = JSON.parse(localStorage.getItem('favoritos_matita')) || [];
+    
+    const favProducts = allProducts.filter(p => favNames.includes(p.nombre));
+
+    if (favProducts.length === 0) {
+      grid.innerHTML = '';
+      msg.style.display = 'block';
+      return;
+    }
+
+    msg.style.display = 'none';
+    grid.innerHTML = '';
+    
+    favProducts.forEach(p => {
+      grid.innerHTML += `
+        <div class="product-card">
+          <div class="img-container">
+            <img src="${p.imagen}" onerror="this.src='https://via.placeholder.com/300'">
+          </div>
+          <div class="info">
+            <h3>${p.nombre}</h3>
+            <span class="price">$${Number(p.precio).toLocaleString('es-AR')}</span>
+          </div>
+          <button class="btn-remove" onclick="removeFav('${p.nombre}')">
+            <i class="fas fa-trash"></i> Quitar de favoritos
+          </button>
+        </div>
+      `;
+    });
+  }
+
+  function removeFav(name) {
+    let favs = JSON.parse(localStorage.getItem('favoritos_matita')) || [];
+    favs = favs.filter(f => f !== name);
+    localStorage.setItem('favoritos_matita', JSON.stringify(favs));
+    renderFavorites(); 
+  }
+
+  // 4. CAMBIO: Al cargar, primero sincronizamos con Supabase
+  window.onload = syncFromSupabase;
+</script>
+</body>
+</html>

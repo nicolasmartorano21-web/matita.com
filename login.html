@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>
+    if (localStorage.getItem('sesion_activa') === 'si') {
+      window.location.href = "Inicio.html";
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso - Librería Matita</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --verde: #0a3d31;
+      --dorado: #c5a35d;
+    }
+    body {
+      margin: 0; font-family: 'Montserrat', sans-serif;
+      background: var(--verde); display: flex; justify-content: center; align-items: center; height: 100vh;
+    }
+    .login-card {
+      background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+    h2 { font-family: 'Playfair Display', serif; color: var(--verde); margin-bottom: 30px; }
+    
+    .input-group { margin-bottom: 20px; text-align: left; }
+    label { display: block; font-size: 0.8rem; font-weight: 700; color: #666; margin-bottom: 5px; }
+    
+    input { 
+      width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; 
+      box-sizing: border-box; font-family: inherit; outline: none; transition: 0.3s;
+    }
+    input:focus { border-color: var(--dorado); box-shadow: 0 0 5px rgba(197, 163, 93, 0.3); }
+
+    .btn-login {
+      width: 100%; padding: 15px; background: var(--verde); color: white; border: none;
+      border-radius: 8px; font-weight: 700; cursor: pointer; text-transform: uppercase; 
+      transition: 0.3s; letter-spacing: 1px; margin-top: 10px;
+    }
+    .btn-login:hover { background: var(--dorado); transform: translateY(-2px); }
+    
+    .toggle-link {
+      margin-top: 20px; font-size: 0.85rem; color: #666;
+    }
+    .toggle-link a {
+      color: var(--dorado); text-decoration: none; font-weight: 700; cursor: pointer;
+    }
+
+    /* ESTILO NUEVO PARA OLVIDÉ MI CONTRASEÑA */
+    .forgot-link {
+      display: block; margin-top: 15px; font-size: 0.75rem; color: #999; text-decoration: none; transition: 0.3s;
+    }
+    .forgot-link:hover { color: var(--dorado); }
+
+    #mensaje { font-size: 0.85rem; margin-top: 15px; display: none; padding: 10px; border-radius: 5px; }
+    .error { color: #e74c3c; background: #fdf2f2; }
+    .success { color: #27ae60; background: #f2fdf5; }
+  </style>
+</head>
+<body>
+
+<div class="login-card">
+  <h2 id="formTitle">Librería Matita</h2>
+  <form id="miLogin">
+    <div class="input-group" id="groupNombre" style="display: none;">
+      <label>NOMBRE COMPLETO</label>
+      <input type="text" id="nombre" placeholder="Tu nombre">
+    </div>
+    <div class="input-group">
+      <label>USUARIO</label>
+      <input type="text" id="user" placeholder="Ej: matita_lector" required>
+    </div>
+    <div class="input-group">
+      <label>CONTRASEÑA</label>
+      <input type="password" id="pass" placeholder="••••••••" required>
+    </div>
+    <button type="submit" class="btn-login" id="btnLogin">Entrar a la tienda</button>
+    
+    <a href="#" onclick="olvidoContrasena()" class="forgot-link">¿Olvidaste tu contraseña?</a>
+    
+    <div id="mensaje"></div>
+  </form>
+
+  <div class="toggle-link">
+    <span id="toggleText">¿No tienes cuenta?</span> 
+    <a id="btnToggle">Regístrate</a>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://xlwkzoapfbpoxaccvoea.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let isRegister = false;
+
+  const btnToggle = document.getElementById('btnToggle');
+  const formTitle = document.getElementById('formTitle');
+  const btnLogin = document.getElementById('btnLogin');
+  const groupNombre = document.getElementById('groupNombre');
+  const toggleText = document.getElementById('toggleText');
+  const mensaje = document.getElementById('mensaje');
+
+  // FUNCIÓN AGREGADA PARA OLVIDO DE CONTRASEÑA
+  function olvidoContrasena() {
+    const user = document.getElementById('user').value || "un usuario";
+    alert("Por seguridad, contacta al soporte de Matita para restablecer tu clave.");
+    window.location.href = `https://wa.me/3516062227?text=Hola!%20Soy%20el%20usuario%20'${user}'%20y%20olvidé%20mi%20contraseña%20de%20la%20web.`;
+  }
+
+  btnToggle.addEventListener('click', () => {
+    isRegister = !isRegister;
+    formTitle.innerText = isRegister ? "Crea tu cuenta" : "Librería Matita";
+    btnLogin.innerText = isRegister ? "Registrarme" : "Entrar a la tienda";
+    toggleText.innerText = isRegister ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?";
+    btnToggle.innerText = isRegister ? "Inicia Sesión" : "Regístrate";
+    groupNombre.style.display = isRegister ? "block" : "none";
+    mensaje.style.display = "none";
+  });
+
+  document.getElementById('miLogin').addEventListener('submit', async function(e) {
+    e.preventDefault(); 
+    
+    const user = document.getElementById('user').value;
+    const pass = document.getElementById('pass').value;
+    const nombre = document.getElementById('nombre').value;
+
+    btnLogin.innerText = "Procesando...";
+    btnLogin.disabled = true;
+    mensaje.style.display = "none";
+
+    if (isRegister) {
+      const { error } = await _supabase
+        .from('usuarios')
+        .insert([{ username: user, password: pass, nombre: nombre }]);
+
+      if (error) {
+        showMsg("El usuario ya existe o hubo un error", "error");
+      } else {
+        showMsg("¡Cuenta creada! Ya puedes iniciar sesión", "success");
+        btnToggle.click();
+      }
+    } else {
+      const { data: usuario, error } = await _supabase
+        .from('usuarios')
+        .select('*')
+        .eq('username', user)
+        .eq('password', pass)
+        .single();
+
+      if (usuario && !error) {
+        localStorage.setItem('sesion_activa', 'si');
+        localStorage.setItem('nombre_usuario', usuario.nombre || user);
+        window.location.href = "Inicio.html"; 
+      } else {
+        showMsg("Usuario o contraseña incorrectos", "error");
+      }
+    }
+    
+    btnLogin.innerText = isRegister ? "Registrarme" : "Entrar a la tienda";
+    btnLogin.disabled = false;
+  });
+
+  function showMsg(txt, type) {
+    mensaje.innerText = txt;
+    mensaje.className = type;
+    mensaje.style.display = "block";
+  }
+</script>
+
+</body>
+</html>

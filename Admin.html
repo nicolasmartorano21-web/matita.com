@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>
+    if (localStorage.getItem('sesion_activa') === 'si') {
+      // window.location.href = "Inicio.html"; 
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Librería Matita</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root { 
+        --verde: #0a3d31; 
+        --dorado: #c5a35d; 
+        --rojo: #d9534f;
+        --fondo: #f4f7f6; 
+        --azul: #3498db;
+        --naranja: #e67e22;
+        --purpura: #9b59b6;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    body { font-family: 'Montserrat', sans-serif; background: var(--fondo); margin: 0; padding: 15px; display: none; }
+    
+    .container { max-width: 1000px; margin: 0 auto; animation: fadeIn 0.5s ease-out; }
+    
+    .header-panel { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+    .header-panel h1 { margin: 0; font-size: 1.2rem; color: var(--verde); display: flex; align-items: center; gap: 10px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .stat-card { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--verde); }
+    .stat-card i { font-size: 1.5rem; color: var(--dorado); margin-bottom: 10px; }
+    .stat-card h3 { margin: 5px 0; font-size: 1.5rem; color: var(--verde); }
+    .stat-card p { margin: 0; font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: 700; }
+
+    .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 25px; }
+    .card h2 { margin-top: 0; font-size: 1rem; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+
+    .form-flex { display: flex; gap: 20px; flex-wrap: wrap; }
+    .inputs-side { flex: 2; min-width: 280px; }
+    .preview-side { flex: 1; min-width: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #ddd; border-radius: 15px; padding: 10px; background: #fafafa; position: relative;}
+    
+    #imgPreview { max-width: 100%; max-height: 200px; border-radius: 10px; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .no-img-text { color: #aaa; font-size: 0.8rem; text-align: center; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px; }
+    
+    input, select { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-family: 'Montserrat'; font-size: 16px; outline: none; transition: 0.3s; }
+    input:focus, select:focus { border-color: var(--dorado); box-shadow: 0 0 0 3px rgba(197, 163, 93, 0.1); }
+    
+    .btn-main { background: var(--verde); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; width: 100%; font-size: 1rem; }
+    .btn-main:hover { background: var(--dorado); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+    .file-upload-btn {
+        background: #f0f0f0; border: 1px solid #ddd; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: inline-block; width: 100%; text-align: center; margin-bottom: 5px;
+    }
+
+    .table-container { background: white; border-radius: 20px; overflow-x: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; min-width: 700px; }
+    th { background: #f9f9f9; padding: 15px; text-align: left; font-size: 0.75rem; color: #888; text-transform: uppercase; }
+    td { padding: 12px 15px; border-top: 1px solid #f0f0f0; }
+    
+    .img-pre { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; }
+    
+    .badge { padding: 5px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; color: white; text-transform: uppercase; display: inline-block; margin-right: 5px; }
+    .bg-green { background: #2ecc71; }
+    .bg-red { background: #e74c3c; }
+    .bg-blue { background: var(--azul); }
+    .bg-orange { background: var(--naranja); }
+    .bg-purple { background: var(--purpura); }
+
+    .actions { display: flex; gap: 10px; }
+    .btn-edit, .btn-del { border: none; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+    .btn-edit { background: #fff4e5; color: #ffa500; }
+    .btn-edit:hover { background: #ffa500; color: white; }
+    .btn-del { background: #fff0f0; color: var(--rojo); }
+    .btn-del:hover { background: var(--rojo); color: white; }
+
+    .res-item, .coupon-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+    .precio-oferta { color: var(--rojo); text-decoration: line-through; font-size: 0.8rem; margin-right: 5px; }
+
+    @media (max-width: 600px) {
+        .form-flex { flex-direction: column-reverse; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-panel">
+    <h1><i class="fas fa-user-shield"></i> Panel Matita Pro</h1>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="Inicio.html" target="_blank" style="color: var(--dorado); text-decoration: none; font-weight: 700; font-size: 0.8rem;">VOLVER AL SITIO <i class="fas fa-home"></i></a>
+        <button onclick="location.reload()" style="border:none; background:#eee; padding:8px 12px; border-radius:8px; cursor:pointer;"><i class="fas fa-sync-alt"></i></button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+        <i class="fas fa-coins"></i>
+        <h3 id="statVentas">$0</h3>
+        <p>Ventas Totales</p>
+    </div>
+    <div class="stat-card" style="border-bottom-color: var(--azul);">
+        <i class="fas fa-shopping-basket"></i>
+        <h3 id="statPedidos">0</h3>
+        <p>Pedidos</p>
+    </div>
+    <div class="stat-card" style="border-bottom-color: var(--purpura);">
+        <i class="fas fa-ticket-alt"></i>
+        <h3 id="statCupones">0</h3>
+        <p>Cupones</p>
+    </div>
+  </div>
+
+  <div class="card" style="border-left: 5px solid var(--naranja);">
+    <h2 style="color: var(--naranja);"><i class="fas fa-gift"></i> Configuración de Promo Activa</h2>
+    <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div>
+            <small style="font-weight:700; color:#999">COMPRA MÍNIMA ($)</small>
+            <input type="number" id="confMontoMin" placeholder="Ej: 50000">
+        </div>
+        <div>
+            <small style="font-weight:700; color:#999">PLATA DE REGALO ($)</small>
+            <input type="number" id="confRegalo" placeholder="Ej: 5000">
+        </div>
+        <div style="display: flex; align-items: flex-end;">
+            <button onclick="guardarConfigPromo()" class="btn-main" style="background: var(--naranja); padding: 12px;">Actualizar Promo</button>
+        </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="color: var(--purpura);"><i class="fas fa-ticket-alt"></i> Cupones de Descuento</h2>
+    <div class="form-grid" style="grid-template-columns: 2fr 1fr 1fr;">
+        <input type="text" id="cNombre" placeholder="Código (Ej: MATITA20)">
+        <input type="number" id="cDesc" placeholder="% Descuento">
+        <button onclick="guardarCupon()" class="btn-main" style="background: var(--purpura); padding: 10px;">Crear Cupón</button>
+    </div>
+    <div id="listaCupones" style="margin-top: 15px;"></div>
+  </div>
+
+  <div class="card">
+    <h2 id="formTitle">Nuevo Producto / Oferta / Combo</h2>
+    <div class="form-flex">
+        <div class="inputs-side">
+            <div class="form-grid">
+                <input type="text" id="pNombre" placeholder="Nombre del Libro/Art.">
+                
+                <div style="display:flex; gap:5px;">
+                  <input type="number" id="pPrecio" placeholder="Precio Actual ($)">
+                  <input type="number" id="pPrecioAnterior" placeholder="Precio Antes ($) Opcional" style="border-color: #ffcccc;">
+                </div>
+
+                <div>
+                  <input type="file" id="pFile" accept="image/*" style="display:none" onchange="subirImagen(this)">
+                  <button type="button" class="file-upload-btn" onclick="document.getElementById('pFile').click()">
+                    <i class="fas fa-image"></i> Abrir Galería del Celular
+                  </button>
+                  <input type="text" id="pImagen" placeholder="Link de imagen resultante" oninput="updatePreview()">
+                  <small id="uploadStatus" style="display:block; font-size:10px; color:var(--verde); font-weight:bold; margin-top:4px;"></small>
+                </div>
+                
+                <select id="pCat">
+                    <option value="lengua">Lengua</option>
+                    <option value="matematica">Matemática</option>
+                    <option value="ciencias">Ciencias</option>
+                    <option value="otros">Otros</option>
+                </select>
+
+                <select id="pStock">
+                    <option value="si">Hay Stock</option>
+                    <option value="no">Agotado</option>
+                </select>
+
+                <select id="pNovedad" style="border: 2px solid var(--azul);">
+                    <option value="no">Producto Normal</option>
+                    <option value="si">Aparecer en Novedades ✨</option>
+                </select>
+
+                <select id="pEtiqueta" style="border: 2px solid var(--dorado);">
+                    <option value="ninguna">Sin Etiqueta Especial</option>
+                    <option value="PACK">Es un Combo/Pack 📦</option>
+                    <option value="PROMO">¡Promoción! 🔥</option>
+                    <option value="LIMITADO">Edición Limitada 💎</option>
+                </select>
+            </div>
+            <button class="btn-main" id="btnMain" onclick="guardar()">
+                <i class="fas fa-cloud-upload-alt"></i> Publicar en la Web
+            </button>
+            <button id="btnCancel" style="display:none; width:100%; margin-top:10px; background:#f0f0f0; border:none; padding:12px; border-radius:10px; cursor:pointer; font-weight:600;" onclick="cancelarEdicion()">Cancelar</button>
+        </div>
+
+        <div class="preview-side">
+            <span class="no-img-text" id="noImgText">Previsualización</span>
+            <img src="" id="imgPreview">
+        </div>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 0; overflow: hidden;">
+    <div style="padding: 20px; font-weight: 700; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #fafafa;">
+        <span style="color: var(--verde)"><i class="fas fa-list"></i> Inventario Actual</span>
+        <span id="contador" class="badge bg-blue">0</span>
+    </div>
+    <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th>Estado/Tags</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="listaProds"></tbody>
+        </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="color: var(--verde);"><i class="fas fa-shopping-bag"></i> Registro de Pedidos Recientes</h2>
+    <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Productos</th>
+              <th>Pago</th>
+              <th>Total</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="listaPedidos"></tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+<script>
+    // --- AUTH SEGURIDAD ---
+    const auth = prompt("Clave de Administradora:");
+    if (auth === "matita2026") { 
+      document.body.style.display = "block"; 
+    } else { 
+      alert("Acceso Denegado");
+      window.location.href = "Inicio.html"; 
+    }
+
+    // --- CONFIGURACIÓN SUPABASE ---
+    const SUPABASE_URL = "https://xlwkzoapfbpoxaccvoea.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // --- CONFIGURACIÓN CLOUDINARY ---
+    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dllm8ggob/image/upload";
+    const UPLOAD_PRESET = "Matita_web";
+
+    let editId = null;
+
+    // --- SUBIDA SILENCIOSA Y OPTIMIZADA A CLOUDINARY ---
+    async function subirImagen(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const statusLabel = document.getElementById('uploadStatus');
+        statusLabel.innerText = "⏳ Optimizando y subiendo...";
+        statusLabel.style.color = "var(--naranja)";
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        // Aplicamos optimización automática q_auto y f_auto
+        formData.append('transformation', 'f_auto,q_auto');
+
+        try {
+            const response = await fetch(CLOUDINARY_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.secure_url) {
+                // Guardamos el link en el input de texto para que Supabase lo tome al "Publicar"
+                document.getElementById('pImagen').value = data.secure_url;
+                updatePreview();
+                statusLabel.innerText = "✅ Imagen lista para publicar";
+                statusLabel.style.color = "var(--verde)";
+            } else {
+                throw new Error("Error en la subida");
+            }
+        } catch (error) {
+            console.error(error);
+            statusLabel.innerText = "❌ Error al subir imagen";
+            statusLabel.style.color = "var(--rojo)";
+        }
+    }
+
+    // --- CARGAR TODO ---
+    async function cargarTodo() {
+        await Promise.all([
+            cargarProductos(),
+            cargarCupones(),
+            cargarPedidos(),
+            cargarConfigPromo()
+        ]);
+        actualizarStats();
+    }
+
+    async function cargarProductos() {
+        const { data: prods, error } = await _supabase.from('productos').select('*').order('created_at', { ascending: false });
+        if (error) return;
+
+        let lista = document.getElementById('listaProds');
+        document.getElementById('contador').innerText = prods.length + " Productos";
+        lista.innerHTML = "";
+        
+        prods.forEach((p) => {
+            const precioAnteriorHTML = p.precioAnterior ? `<span class="precio-oferta">$${Number(p.precioAnterior).toLocaleString('es-AR')}</span>` : "";
+            let tagHTML = (p.etiqueta && p.etiqueta !== "ninguna") ? `<span class="badge ${p.etiqueta === 'PACK' ? 'bg-purple' : 'bg-orange'}">${p.etiqueta}</span>` : "";
+
+            lista.innerHTML += `
+            <tr>
+              <td><img src="${p.imagen}" class="img-pre" onerror="this.src='https://via.placeholder.com/50'"></td>
+              <td>
+                <div style="font-weight:700; color:var(--verde); font-size:0.9rem">${p.nombre}</div>
+                <div style="font-size:10px; color:#aaa; font-weight:600; text-transform:uppercase">${p.categoria}</div>
+              </td>
+              <td>${precioAnteriorHTML}<strong style="color:var(--verde)">$${Number(p.precio).toLocaleString('es-AR')}</strong></td>
+              <td>
+                <span class="badge ${p.stock === 'no' ? 'bg-red' : 'bg-green'}">${p.stock === 'no' ? 'Agotado' : 'Stock'}</span>
+                ${p.novedad === 'si' ? '<span class="badge bg-blue">✨ Nuevo</span>' : ''}
+                ${tagHTML}
+              </td>
+              <td>
+                <div class="actions">
+                    <button class="btn-edit" onclick="editar('${p.id}')"><i class="fas fa-pen"></i></button>
+                    <button class="btn-del" onclick="eliminar('${p.id}')"><i class="fas fa-trash-alt"></i></button>
+                </div>
+              </td>
+            </tr>`;
+        });
+    }
+
+    async function guardar() {
+        const btn = document.getElementById('btnMain');
+        const pData = {
+            nombre: document.getElementById('pNombre').value,
+            precio: Number(document.getElementById('pPrecio').value),
+            precioAnterior: document.getElementById('pPrecioAnterior').value ? Number(document.getElementById('pPrecioAnterior').value) : null,
+            imagen: document.getElementById('pImagen').value || 'https://via.placeholder.com/300',
+            categoria: document.getElementById('pCat').value,
+            stock: document.getElementById('pStock').value,
+            novedad: document.getElementById('pNovedad').value,
+            etiqueta: document.getElementById('pEtiqueta').value
+        };
+
+        if(!pData.nombre || !pData.precio) return alert("⚠️ Nombre y Precio son obligatorios");
+        
+        btn.disabled = true;
+        btn.innerText = "Guardando...";
+
+        let result;
+        if(editId) {
+            result = await _supabase.from('productos').update(pData).eq('id', editId);
+        } else {
+            result = await _supabase.from('productos').insert([pData]);
+        }
+
+        if(result.error) alert("Error al guardar");
+        else {
+            cancelarEdicion();
+            cargarProductos();
+        }
+        btn.disabled = false;
+    }
+
+    async function editar(id) {
+        const { data: p } = await _supabase.from('productos').select('*').eq('id', id).single();
+        if(!p) return;
+
+        document.getElementById('pNombre').value = p.nombre;
+        document.getElementById('pPrecio').value = p.precio;
+        document.getElementById('pPrecioAnterior').value = p.precioAnterior || "";
+        document.getElementById('pImagen').value = p.imagen;
+        document.getElementById('pCat').value = p.categoria;
+        document.getElementById('pStock').value = p.stock;
+        document.getElementById('pNovedad').value = p.novedad;
+        document.getElementById('pEtiqueta').value = p.etiqueta || "ninguna";
+
+        editId = id;
+        updatePreview();
+        document.getElementById('formTitle').innerText = "Modificando Producto";
+        document.getElementById('btnMain').innerHTML = "<i class='fas fa-save'></i> Guardar Cambios";
+        document.getElementById('btnCancel').style.display = "block";
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    async function eliminar(id) {
+        if(confirm("¿Eliminar producto?")) {
+            await _supabase.from('productos').delete().eq('id', id);
+            cargarProductos();
+        }
+    }
+
+    async function cargarPedidos() {
+        const { data: pedidos } = await _supabase.from('pedidos').select('*').order('created_at', { ascending: false });
+        let lista = document.getElementById('listaPedidos');
+        lista.innerHTML = pedidos?.map(p => `
+            <tr>
+                <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                <td style="font-size:0.75rem">${p.detalle}</td>
+                <td><span class="badge bg-blue">${p.pago}</span></td>
+                <td style="font-weight:700">$${p.total.toLocaleString('es-AR')}</td>
+                <td><button class="btn-del" onclick="eliminarPedido('${p.id}')"><i class="fas fa-check"></i></button></td>
+            </tr>
+        `).join("") || "";
+    }
+
+    async function eliminarPedido(id) {
+        await _supabase.from('pedidos').delete().eq('id', id);
+        cargarPedidos();
+        actualizarStats();
+    }
+
+    async function guardarCupon() {
+        const codigo = document.getElementById('cNombre').value.toUpperCase().trim();
+        const descuento = document.getElementById('cDesc').value;
+        if(!codigo || !descuento) return;
+
+        await _supabase.from('cupones').insert([{ codigo, descuento }]);
+        document.getElementById('cNombre').value = "";
+        document.getElementById('cDesc').value = "";
+        cargarCupones();
+    }
+
+    async function cargarCupones() {
+        const { data: cupones } = await _supabase.from('cupones').select('*');
+        document.getElementById('listaCupones').innerHTML = cupones?.map(c => `
+            <div class="coupon-item">
+                <span><b>${c.codigo}</b> - ${c.descuento}%</span>
+                <button class="btn-del" onclick="eliminarCupon('${c.id}')"><i class="fas fa-times"></i></button>
+            </div>
+        `).join("") || "";
+    }
+
+    async function eliminarCupon(id) {
+        await _supabase.from('cupones').delete().eq('id', id);
+        cargarCupones();
+    }
+
+    function updatePreview() {
+        const url = document.getElementById('pImagen').value;
+        const img = document.getElementById('imgPreview');
+        const text = document.getElementById('noImgText');
+        if(url.trim()) { img.src = url; img.style.display = 'block'; text.style.display = 'none'; }
+        else { img.style.display = 'none'; text.style.display = 'block'; }
+    }
+
+    function cancelarEdicion() {
+        editId = null;
+        document.getElementById('pNombre').value = "";
+        document.getElementById('pPrecio').value = "";
+        document.getElementById('pPrecioAnterior').value = "";
+        document.getElementById('pImagen').value = "";
+        document.getElementById('formTitle').innerText = "Nuevo Producto";
+        document.getElementById('btnMain').innerHTML = "<i class='fas fa-cloud-upload-alt'></i> Publicar en la Web";
+        document.getElementById('btnCancel').style.display = "none";
+        document.getElementById('uploadStatus').innerText = "";
+        updatePreview();
+    }
+
+    async function actualizarStats() {
+        const { data: p } = await _supabase.from('pedidos').select('total');
+        const { data: c } = await _supabase.from('cupones').select('id');
+        
+        let total = p?.reduce((acc, curr) => acc + curr.total, 0) || 0;
+        document.getElementById('statVentas').innerText = "$" + total.toLocaleString('es-AR');
+        document.getElementById('statPedidos').innerText = p?.length || 0;
+        document.getElementById('statCupones').innerText = c?.length || 0;
+    }
+
+    function cargarConfigPromo() {
+        const config = JSON.parse(localStorage.getItem('config_matita')) || { montoMinimo: 50000, regaloPesos: 5000 };
+        document.getElementById('confMontoMin').value = config.montoMinimo;
+        document.getElementById('confRegalo').value = config.regaloPesos;
+    }
+
+    function guardarConfigPromo() {
+        const nuevaConfig = {
+            montoMinimo: Number(document.getElementById('confMontoMin').value),
+            regaloPesos: Number(document.getElementById('confRegalo').value)
+        };
+        localStorage.setItem('config_matita', JSON.stringify(nuevaConfig));
+        alert("¡Promo de banner actualizada!");
+    }
+
+    window.onload = cargarTodo;
+</script>
+</body>
+</html>
