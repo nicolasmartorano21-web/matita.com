@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
   <script>
+    // Si ya hay una sesión, redirige directamente a la tienda (index.html)
     if (localStorage.getItem('sesion_activa') === 'si') {
-      // Esto redirige a la raíz del sitio, que por defecto siempre es index.html
-window.location.href = "./";
+      window.location.replace("index.html");
     }
   </script>
 
@@ -53,7 +53,6 @@ window.location.href = "./";
       color: var(--dorado); text-decoration: none; font-weight: 700; cursor: pointer;
     }
 
-    /* ESTILO NUEVO PARA OLVIDÉ MI CONTRASEÑA */
     .forgot-link {
       display: block; margin-top: 15px; font-size: 0.75rem; color: #999; text-decoration: none; transition: 0.3s;
     }
@@ -108,7 +107,6 @@ window.location.href = "./";
   const toggleText = document.getElementById('toggleText');
   const mensaje = document.getElementById('mensaje');
 
-  // FUNCIÓN AGREGADA PARA OLVIDO DE CONTRASEÑA
   function olvidoContrasena() {
     const user = document.getElementById('user').value || "un usuario";
     alert("Por seguridad, contacta al soporte de Matita para restablecer tu clave.");
@@ -128,9 +126,9 @@ window.location.href = "./";
   document.getElementById('miLogin').addEventListener('submit', async function(e) {
     e.preventDefault(); 
     
-    const user = document.getElementById('user').value;
+    const user = document.getElementById('user').value.trim();
     const pass = document.getElementById('pass').value;
-    const nombre = document.getElementById('nombre').value;
+    const nombre = document.getElementById('nombre').value.trim();
 
     btnLogin.innerText = "Procesando...";
     btnLogin.disabled = true;
@@ -145,7 +143,7 @@ window.location.href = "./";
         showMsg("El usuario ya existe o hubo un error", "error");
       } else {
         showMsg("¡Cuenta creada! Ya puedes iniciar sesión", "success");
-        btnToggle.click();
+        setTimeout(() => btnToggle.click(), 1500);
       }
     } else {
       const { data: usuario, error } = await _supabase
@@ -158,7 +156,8 @@ window.location.href = "./";
       if (usuario && !error) {
         localStorage.setItem('sesion_activa', 'si');
         localStorage.setItem('nombre_usuario', usuario.nombre || user);
-        window.location.href = "Inicio.html"; 
+        // REDIRECCIÓN CORREGIDA A index.html
+        window.location.replace("index.html"); 
       } else {
         showMsg("Usuario o contraseña incorrectos", "error");
       }
@@ -176,7 +175,4 @@ window.location.href = "./";
 </script>
 
 </body>
-
 </html>
-
-
