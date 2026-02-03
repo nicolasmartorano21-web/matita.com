@@ -101,7 +101,7 @@
   <div class="header-panel">
     <h1><i class="fas fa-user-shield"></i> Panel Matita Pro</h1>
     <div style="display: flex; gap: 10px; align-items: center;">
-        <a href="Inicio.html" target="_blank" style="color: var(--dorado); text-decoration: none; font-weight: 700; font-size: 0.8rem;">VOLVER AL SITIO <i class="fas fa-home"></i></a>
+        <a href="index.html" target="_blank" style="color: var(--dorado); text-decoration: none; font-weight: 700; font-size: 0.8rem;">VOLVER AL SITIO <i class="fas fa-home"></i></a>
         <button onclick="location.reload()" style="border:none; background:#eee; padding:8px 12px; border-radius:8px; cursor:pointer;"><i class="fas fa-sync-alt"></i></button>
     </div>
   </div>
@@ -256,7 +256,7 @@
       document.body.style.display = "block"; 
     } else { 
       alert("Acceso Denegado");
-      window.location.href = "Inicio.html"; 
+      window.location.href = "index.html"; 
     }
 
     // --- CONFIGURACIÓN SUPABASE ---
@@ -264,51 +264,57 @@
     const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- CONFIGURACIÓN CLOUDINARY ---
-    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dllm8ggob/image/upload";
+    // --- CONFIGURACIÓN CLOUDINARY (CORREGIDA) ---
+    const CLOUD_NAME = "dllm8ggob";
     const UPLOAD_PRESET = "Matita_web";
+    const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
     let editId = null;
 
-    // --- SUBIDA SILENCIOSA Y OPTIMIZADA A CLOUDINARY ---
+    // --- SUBIDA OPTIMIZADA CON MODO CORS ---
     async function subirImagen(input) {
         const file = input.files[0];
         if (!file) return;
 
         const statusLabel = document.getElementById('uploadStatus');
-        statusLabel.innerText = "⏳ Optimizando y subiendo...";
+        statusLabel.innerText = "⏳ Subiendo...";
         statusLabel.style.color = "var(--naranja)";
 
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', UPLOAD_PRESET);
-        // Aplicamos optimización automática q_auto y f_auto
-        formData.append('transformation', 'f_auto,q_auto');
 
         try {
             const response = await fetch(CLOUDINARY_URL, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                mode: 'cors'
             });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error?.message || "Fallo en Cloudinary");
+            }
+
             const data = await response.json();
 
             if (data.secure_url) {
-                // Guardamos el link en el input de texto para que Supabase lo tome al "Publicar"
-                document.getElementById('pImagen').value = data.secure_url;
+                // Generar URL con optimización f_auto,q_auto
+                const optimizedUrl = data.secure_url.replace('/upload/', '/upload/f_auto,q_auto/');
+                document.getElementById('pImagen').value = optimizedUrl;
                 updatePreview();
                 statusLabel.innerText = "✅ Imagen lista para publicar";
                 statusLabel.style.color = "var(--verde)";
-            } else {
-                throw new Error("Error en la subida");
             }
         } catch (error) {
-            console.error(error);
-            statusLabel.innerText = "❌ Error al subir imagen";
+            console.error("Error completo:", error);
+            statusLabel.innerText = "❌ Error: " + error.message;
             statusLabel.style.color = "var(--rojo)";
+            alert("Asegúrate de que en Cloudinary el preset 'Matita_web' sea 'Unsigned'.");
         }
     }
 
-    // --- CARGAR TODO ---
+    // --- RESTO DE FUNCIONES ---
     async function cargarTodo() {
         await Promise.all([
             cargarProductos(),
@@ -379,7 +385,7 @@
             result = await _supabase.from('productos').insert([pData]);
         }
 
-        if(result.error) alert("Error al guardar");
+        if(result.error) alert("Error al guardar en Supabase");
         else {
             cancelarEdicion();
             cargarProductos();
