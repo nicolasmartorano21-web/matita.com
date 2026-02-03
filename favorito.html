@@ -36,6 +36,7 @@
     .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
     
     .info { padding: 20px; text-align: center; flex-grow: 1; }
+    .info h3 { font-size: 1.1rem; margin-bottom: 10px; }
     .price { font-size: 1.3rem; font-weight: 700; color: var(--verde-oscuro); margin-bottom: 10px; display: block; }
     
     .btn-remove { width: 100%; background: #f8f8f8; color: #666; border: none; padding: 12px; cursor: pointer; font-weight: 700; transition: 0.3s; }
@@ -47,7 +48,7 @@
 <body>
 
 <header>
-  <a href="favorito.html">Favoritos ❤️</a>
+  <h1>Mis Favoritos ❤️</h1>
 </header>
 
 <nav>
@@ -66,17 +67,23 @@
 </div>
 
 <script>
-  // 2. AGREGADO: CONFIGURACIÓN DE TU SUPABASE
+  // CONFIGURACIÓN DE SUPABASE
   const SUPABASE_URL = "https://xlwkzoapfbpoxaccvoea.supabase.co";
   const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
+  
+  // CORRECCIÓN: Usar 'supabase' (minúscula) que es el objeto global de la librería
   const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // 3. AGREGADO: FUNCIÓN PARA SINCRONIZAR PRODUCTOS DESDE LA NUBE
+  // FUNCIÓN PARA SINCRONIZAR PRODUCTOS DESDE LA NUBE
   async function syncFromSupabase() {
     const { data, error } = await _supabase.from('productos').select('*');
     if (!error && data) {
       localStorage.setItem('productos_matita', JSON.stringify(data));
-      renderFavorites(); // Llamamos al render original después de descargar
+      renderFavorites(); 
+    } else {
+        // Si hay error de red, intentamos renderizar con lo que haya en LocalStorage
+        console.error("Error sincronizando:", error);
+        renderFavorites();
     }
   }
 
@@ -84,9 +91,11 @@
     const grid = document.getElementById('favoritesGrid');
     const msg = document.getElementById('emptyMessage');
     
+    // Obtenemos los datos actuales
     const allProducts = JSON.parse(localStorage.getItem('productos_matita')) || [];
     const favNames = JSON.parse(localStorage.getItem('favoritos_matita')) || [];
     
+    // Filtramos los productos que coincidan con los nombres guardados
     const favProducts = allProducts.filter(p => favNames.includes(p.nombre));
 
     if (favProducts.length === 0) {
@@ -99,10 +108,15 @@
     grid.innerHTML = '';
     
     favProducts.forEach(p => {
+      // Optimización de imagen si es Cloudinary
+      const imgUrl = (p.imagen && p.imagen.includes('cloudinary')) 
+                     ? p.imagen.replace('/upload/', '/upload/f_auto,q_auto/') 
+                     : (p.imagen || '');
+
       grid.innerHTML += `
         <div class="product-card">
           <div class="img-container">
-            <img src="${p.imagen}" onerror="this.src='https://via.placeholder.com/300'">
+            <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/300'">
           </div>
           <div class="info">
             <h3>${p.nombre}</h3>
@@ -123,11 +137,9 @@
     renderFavorites(); 
   }
 
-  // 4. CAMBIO: Al cargar, primero sincronizamos con Supabase
+  // Al cargar la página, sincronizamos con la base de datos
   window.onload = syncFromSupabase;
 </script>
 </body>
-
 </html>
-
 
