@@ -346,7 +346,6 @@
     const SUPABASE_URL = "https://xlwkzoapfbpoxaccvoea.supabase.co";
     const SUPABASE_KEY = "sb_publishable_knGPyLLlMsy-YCQIblQnbQ_nrC8rV6x";
     
-    // CORRECCIÓN 1: Se debe usar 'supabase' (minúscula) que es el objeto global de la librería
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let products = [];
@@ -359,7 +358,7 @@
     const configMatita = { 
         montoMinimoRegalo: 50000, 
         valorRegalo: 5000,
-        descEfectivo: 0.10 
+        descEfectivo: 0 // CORREGIDO: Sin descuento por efectivo
     };
 
     // --- CARGA DE PRODUCTOS ---
@@ -387,7 +386,6 @@
 
         filtered.forEach(p => {
             const isFav = favorites.includes(p.nombre) ? 'active' : '';
-            // CORRECCIÓN 2: Validar si p.imagen existe antes de procesarlo para evitar errores
             const imgUrl = (p.imagen && p.imagen.includes('cloudinary')) ? p.imagen.replace('/upload/', '/upload/f_auto,q_auto/') : (p.imagen || '');
             
             grid.innerHTML += `
@@ -438,8 +436,9 @@
         `).join('');
 
         let subtotal = cart.reduce((acc, item) => acc + item.price, 0);
-        // CORRECCIÓN 3: Se usa .includes() solo si paymentMethod no es nulo/vacío
-        let descuentoEfectivo = (paymentMethod && paymentMethod.includes('Efectivo')) ? subtotal * configMatita.descEfectivo : 0;
+        
+        // CORREGIDO: DescuentoEfectivo siempre es 0
+        let descuentoEfectivo = 0; 
         let regaloExtra = (subtotal >= configMatita.montoMinimoRegalo) ? configMatita.valorRegalo : 0;
         let cupónDesc = appliedCoupon ? subtotal * (appliedCoupon.descuento / 100) : 0;
         
@@ -507,7 +506,8 @@
             pago: paymentMethod
         }]);
 
-        window.open(`https://wa.me/3516062227?text=${mensaje}`, '_blank');
+        // ACTUALIZADO: Número correcto 5493517587003
+        window.open(`https://wa.me/5493517587003?text=${mensaje}`, '_blank');
     }
 
     // --- OTROS ---
