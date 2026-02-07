@@ -72,6 +72,7 @@
         font-weight: 700; 
         border-radius: 50px; 
         transition: 0.3s; 
+        letter-spacing: 1px;
     }
     .btn-main:hover { background: var(--dorado); transform: scale(1.05); }
 
@@ -124,7 +125,7 @@
 <header>
   <img src="logo2.png" alt="Logo Matita" class="logo-header">
   <h1>Librería Matita</h1>
-  <p>Tu rincón literario y tecnológico</p>
+  <p>Inspiración en cada página, tecnología en cada paso.</p>
 </header>
 
 <nav>
@@ -138,23 +139,23 @@
 
 <section class="hero-section">
     <div class="hero-card">
-      <h2 id="saludoUsuario">¡Bienvenidos!</h2>
-      <p>Explorá nuestro catálogo y hacé tu pedido directamente por WhatsApp al 3517587003.</p>
+      <h2 id="saludoUsuario">¡Bienvenidos a Matita!</h2>
+      <p>Descubrí tesoros literarios y las mejores herramientas para tu estudio o trabajo. Pedidos rápidos por WhatsApp al 3517587003.</p>
       <br>
-      <a href="catalogo.html" class="btn-main">VER CATÁLOGO</a>
+      <a href="catalogo.html" class="btn-main">EXPLORAR COLECCIONES</a>
     </div>
 </section>
 
 <div class="container" id="novedadesSection" style="display:none;">
-  <h2 class="title">✨ Recién llegados</h2>
+  <h2 class="title">✨ Selección Exclusiva</h2>
   <div class="grid" id="novedadesGrid"></div>
 </div>
 
 <div class="container">
-  <h2 class="title">Reseñas</h2>
+  <h2 class="title">Tu Experiencia nos Importa</h2>
   
   <div class="hero-card" style="max-width: 600px; margin-bottom: 40px;">
-    <h3 style="margin-top:0; color: var(--verde-oscuro)">Dejanos tu opinión</h3>
+    <h3 style="margin-top:0; color: var(--verde-oscuro)">Compartí tu opinión</h3>
     
     <div class="stars-input" id="starRating">
       <i class="fas fa-star" onclick="setRating(1)"></i>
@@ -165,8 +166,8 @@
     </div>
 
     <input type="text" id="revName" placeholder="Tu nombre" style="width:100%; padding:12px; margin:10px 0; border:1px solid #ddd; border-radius:8px;">
-    <textarea id="revText" placeholder="Tu comentario..." rows="3" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;"></textarea>
-    <button id="btnPublicar" onclick="saveReview()" style="background: var(--dorado); color: white; border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; border-radius: 8px;">PUBLICAR</button>
+    <textarea id="revText" placeholder="¿Qué te pareció nuestro servicio?" rows="3" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;"></textarea>
+    <button id="btnPublicar" onclick="saveReview()" style="background: var(--dorado); color: white; border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; border-radius: 8px;">ENVIAR COMENTARIO</button>
   </div>
 
   <div class="grid" id="reviewsGrid"></div>
@@ -174,7 +175,7 @@
 
 <a href="https://wa.me/5493517587003" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
-<footer><p>© 2026 Librería Matita</p></footer>
+<footer><p>© 2026 Librería Matita | Calidad y Compromiso</p></footer>
 
 <script>
   // CONFIGURACIÓN SUPABASE
@@ -187,7 +188,7 @@
   window.onload = function() { 
     const nombreGuardado = localStorage.getItem('nombre_usuario');
     if (nombreGuardado) {
-        document.getElementById('saludoUsuario').innerText = `¡Hola, ${nombreGuardado}!`;
+        document.getElementById('saludoUsuario').innerText = `¡Hola, ${nombreGuardado}! Qué alegría tenerte acá.`;
         document.getElementById('revName').value = nombreGuardado;
     }
 
@@ -222,21 +223,21 @@
       section.style.display = "block";
       grid.innerHTML = novedades.map(p => {
         let precioFinal = parseFloat(p.precio) || 0;
-        const optimizedImg = p.imagen.replace('/upload/', '/upload/f_auto,q_auto/');
+        const optimizedImg = p.imagen ? p.imagen.replace('/upload/', '/upload/f_auto,q_auto/') : 'https://via.placeholder.com/300';
 
-        // --- LÓGICA DE ETIQUETAS SINCRONIZADA CON PANEL ADMIN ---
+        // --- LÓGICA DE ETIQUETAS SINCRONIZADA ---
         let textoBadge = "Novedad ✨";
         let colorBadge = "var(--rojo)";
 
         if (p.etiqueta === 'PACK') {
             textoBadge = "Combo / Pack 📦";
-            colorBadge = "#9b59b6"; // Púrpura
+            colorBadge = "#9b59b6"; 
         } else if (p.etiqueta === 'PROMO') {
             textoBadge = "¡Promoción! 🔥";
-            colorBadge = "#e67e22"; // Naranja
+            colorBadge = "#e67e22"; 
         } else if (p.etiqueta === 'LIMITADO') {
             textoBadge = "Edición Limitada 💎";
-            colorBadge = "var(--dorado)"; // Dorado
+            colorBadge = "var(--dorado)"; 
         }
 
         return `
@@ -249,7 +250,7 @@
             <p style="color:var(--verde-oscuro); font-weight:700; margin-bottom: 5px; font-size: 1.2rem;">
                $${precioFinal.toLocaleString('es-AR')}
             </p>
-            <a href="catalogo.html" class="go-link">Ver en catálogo <i class="fas fa-arrow-right"></i></a>
+            <a href="catalogo.html" class="go-link">Explorar producto <i class="fas fa-arrow-right"></i></a>
           </div>
         `;
       }).join("");
@@ -263,10 +264,10 @@
     const text = document.getElementById('revText').value;
     const btn = document.getElementById('btnPublicar');
 
-    if (!name || !text) return alert("Completá los campos");
+    if (!name || !text) return alert("Por favor, escribí tu nombre y comentario.");
     
     btn.disabled = true;
-    btn.innerText = "PUBLICANDO...";
+    btn.innerText = "ENVIANDO...";
 
     const { error } = await _supabase
       .from('reseñas')
@@ -277,15 +278,15 @@
       }]);
 
     if (error) {
-        alert("Error al publicar");
+        alert("Hubo un problema al publicar.");
         console.error(error);
         btn.disabled = false;
-        btn.innerText = "PUBLICAR";
+        btn.innerText = "ENVIAR COMENTARIO";
     } else {
         document.getElementById('revText').value = "";
         renderReviews();
         btn.disabled = false;
-        btn.innerText = "PUBLICAR";
+        btn.innerText = "ENVIAR COMENTARIO";
     }
   }
 
