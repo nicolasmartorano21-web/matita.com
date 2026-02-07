@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -23,6 +24,8 @@
         --crema: #f9f7f2; 
         --blanco: #ffffff; 
         --rojo: #e74c3c;
+        --naranja: #e67e22;
+        --purpura: #9b59b6;
     }
     
     * { box-sizing: border-box; }
@@ -222,12 +225,22 @@
       section.style.display = "block";
       grid.innerHTML = novedades.map(p => {
         let precioFinal = parseFloat(p.precio) || 0;
-        // OPTIMIZACIÓN DE IMAGEN CLOUDINARY
-        const optimizedImg = p.imagen.replace('/upload/', '/upload/f_auto,q_auto/');
+        const optimizedImg = p.imagen ? p.imagen.replace('/upload/', '/upload/f_auto,q_auto/') : 'https://via.placeholder.com/300';
+
+        // LÓGICA DE ETIQUETAS DINÁMICAS
+        let etiquetaTexto = "Novedad ✨";
+        let estiloColor = "var(--rojo)";
+
+        if (p.etiqueta && p.etiqueta !== 'ninguna' && p.etiqueta !== 'Sin Etiqueta Especial') {
+            etiquetaTexto = p.etiqueta;
+            if (p.etiqueta.includes('Combo/Pack')) estiloColor = "var(--purpura)";
+            else if (p.etiqueta.includes('Promoción')) estiloColor = "var(--naranja)";
+            else if (p.etiqueta.includes('Edición Limitada')) estiloColor = "var(--dorado)";
+        }
 
         return `
           <div class="card">
-            <div class="badge-novedad">Novedad ✨</div>
+            <div class="badge-novedad" style="background: ${estiloColor}">${etiquetaTexto}</div>
             <div class="img-box">
               <img src="${optimizedImg}" onerror="this.src='https://via.placeholder.com/300'">
             </div>
