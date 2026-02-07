@@ -125,7 +125,7 @@
 <header>
   <img src="logo2.png" alt="Logo Matita" class="logo-header">
   <h1>Librería Matita</h1>
-  <p>Inspiración en cada página, tecnología en cada paso.</p>
+  <p>Calidad en papelería, oficina y tecnología.</p>
 </header>
 
 <nav>
@@ -133,14 +133,14 @@
   <a href="index.html">Inicio</a>
   <a href="catalogo.html">Catálogo</a> 
   <a href="contacto.html">Contacto</a>
-   <a href="favorito.html">Favoritos ❤️</a>
+  <a href="favorito.html">Favoritos ❤️</a>
   <a href="#" onclick="cerrarSesion()" style="color:#d9534f; margin-left: 15px;"><i class="fas fa-sign-out-alt"></i></a>
 </nav>
 
 <section class="hero-section">
     <div class="hero-card">
-      <h2 id="saludoUsuario">¡Bienvenidos a Matita!</h2>
-      <p>Descubrí tesoros literarios y las mejores herramientas para tu estudio o trabajo. Pedidos rápidos por WhatsApp al 3517587003.</p>
+      <h2 id="saludoUsuario">¡Te damos la bienvenida!</h2>
+      <p>Descubrí las mejores herramientas para potenciar tu estudio o trabajo. Hacé tu pedido por WhatsApp al 3517587003.</p>
       <br>
       <a href="catalogo.html" class="btn-main">EXPLORAR COLECCIONES</a>
     </div>
@@ -187,9 +187,12 @@
 
   window.onload = function() { 
     const nombreGuardado = localStorage.getItem('nombre_usuario');
-    if (nombreGuardado) {
-        document.getElementById('saludoUsuario').innerText = `¡Hola, ${nombreGuardado}! Qué alegría tenerte acá.`;
+    // Si el usuario es el Admin, ponemos un saludo general para que el cliente no lo vea mal.
+    if (nombreGuardado && nombreGuardado !== "Admin Matita") {
+        document.getElementById('saludoUsuario').innerText = `¡Hola, ${nombreGuardado}!`;
         document.getElementById('revName').value = nombreGuardado;
+    } else {
+        document.getElementById('saludoUsuario').innerText = "¡Te damos la bienvenida!";
     }
 
     renderNovedades(); 
@@ -214,10 +217,7 @@
       .select('*')
       .eq('novedad', 'si');
 
-    if (error) {
-        console.error("Error cargando novedades:", error);
-        return;
-    }
+    if (error) return;
 
     if (novedades && novedades.length > 0) {
       section.style.display = "block";
@@ -225,10 +225,10 @@
         let precioFinal = parseFloat(p.precio) || 0;
         const optimizedImg = p.imagen ? p.imagen.replace('/upload/', '/upload/f_auto,q_auto/') : 'https://via.placeholder.com/300';
 
-        // --- LÓGICA DE ETIQUETAS SINCRONIZADA ---
         let textoBadge = "Novedad ✨";
         let colorBadge = "var(--rojo)";
 
+        // Sincronización con las etiquetas de tu Panel Admin
         if (p.etiqueta === 'PACK') {
             textoBadge = "Combo / Pack 📦";
             colorBadge = "#9b59b6"; 
@@ -246,11 +246,11 @@
             <div class="img-box">
               <img src="${optimizedImg}" onerror="this.src='https://via.placeholder.com/300'">
             </div>
-            <h3 style="font-family:'Playfair Display'; margin: 10px 0; font-size: 1.1rem;">${p.nombre}</h3>
+            <h3 style="margin: 10px 0; font-size: 1.1rem; font-weight: 700;">${p.nombre}</h3>
             <p style="color:var(--verde-oscuro); font-weight:700; margin-bottom: 5px; font-size: 1.2rem;">
                $${precioFinal.toLocaleString('es-AR')}
             </p>
-            <a href="catalogo.html" class="go-link">Explorar producto <i class="fas fa-arrow-right"></i></a>
+            <a href="catalogo.html" class="go-link">Ver producto <i class="fas fa-arrow-right"></i></a>
           </div>
         `;
       }).join("");
@@ -264,7 +264,7 @@
     const text = document.getElementById('revText').value;
     const btn = document.getElementById('btnPublicar');
 
-    if (!name || !text) return alert("Por favor, escribí tu nombre y comentario.");
+    if (!name || !text) return alert("Por favor, completá los campos.");
     
     btn.disabled = true;
     btn.innerText = "ENVIANDO...";
@@ -278,8 +278,7 @@
       }]);
 
     if (error) {
-        alert("Hubo un problema al publicar.");
-        console.error(error);
+        alert("Error al publicar.");
         btn.disabled = false;
         btn.innerText = "ENVIAR COMENTARIO";
     } else {
@@ -292,23 +291,18 @@
 
   async function renderReviews() {
     const grid = document.getElementById('reviewsGrid');
-    
     const { data: reviews, error } = await _supabase
       .from('reseñas')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-        console.error("Error reviews:", error);
-        return;
-    }
+    if (error) return;
 
     grid.innerHTML = reviews.map(r => {
       let starsHtml = '';
       for(let i=0; i<5; i++) {
         starsHtml += `<i class="${i < r.estrellas ? 'fas' : 'far'} fa-star"></i>`;
       }
-      
       return `
         <div class="review-card">
           <div class="rating">${starsHtml}</div>
